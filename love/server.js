@@ -15,13 +15,8 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripePriceId = process.env.STRIPE_PRICE_ID;
 const openaiApiKey = process.env.OPENAI_API_KEY;
 
-if (!stripeSecretKey) {
-  throw new Error("Missing STRIPE_SECRET_KEY in .env");
-}
-
-if (!stripePriceId) {
-  throw new Error("Missing STRIPE_PRICE_ID in .env");
-}
+if (!stripeSecretKey) throw new Error("Missing STRIPE_SECRET_KEY in .env");
+if (!stripePriceId) throw new Error("Missing STRIPE_PRICE_ID in .env");
 
 const stripe = new Stripe(stripeSecretKey, { apiVersion: "2024-06-20" });
 const openaiClient = openaiApiKey ? new OpenAI({ apiKey: openaiApiKey }) : null;
@@ -29,26 +24,11 @@ const openaiClient = openaiApiKey ? new OpenAI({ apiKey: openaiApiKey }) : null;
 const attempts = new Map();
 
 const archetypes = [
-  {
-    name: "Overthinker Texter",
-    description: "You care a lot and want things to go well, but you can overanalyze messages."
-  },
-  {
-    name: "Confident Flirter",
-    description: "You lead with clarity and playful energy that keeps conversations flowing."
-  },
-  {
-    name: "Friendly but Vague",
-    description: "You are warm and friendly, but your intentions can be hard to read."
-  },
-  {
-    name: "Dry Responder",
-    description: "You keep replies short and calm, which can feel distant to others."
-  },
-  {
-    name: "Warm Storyteller",
-    description: "You connect through details and emotional openness, making people feel safe."
-  }
+  { name: "Overthinker Texter", description: "You care a lot and want things to go well, but you can overanalyze messages." },
+  { name: "Confident Flirter", description: "You lead with clarity and playful energy that keeps conversations flowing." },
+  { name: "Friendly but Vague", description: "You are warm and friendly, but your intentions can be hard to read." },
+  { name: "Dry Responder", description: "You keep replies short and calm, which can feel distant to others." },
+  { name: "Warm Storyteller", description: "You connect through details and emotional openness, making people feel safe." }
 ];
 
 const fallbackAdvice = `Practical next steps
@@ -69,18 +49,8 @@ Two message scripts
 2) "I like talking with you. Want to grab a quick coffee sometime and keep the convo going?"`;
 
 function calculateTraits(answers) {
-  const traits = {
-    confidence: 50,
-    clarity: 50,
-    playfulness: 50,
-    emotional: 50,
-    consistency: 50,
-    anxiety: 50
-  };
-
-  const adjust = (trait, delta) => {
-    traits[trait] = Math.max(0, Math.min(100, traits[trait] + delta));
-  };
+  const traits = { confidence: 50, clarity: 50, playfulness: 50, emotional: 50, consistency: 50, anxiety: 50 };
+  const adjust = (trait, delta) => (traits[trait] = Math.max(0, Math.min(100, traits[trait] + delta)));
 
   Object.values(answers).forEach((value) => {
     if (value === 0) adjust("confidence", 6);
@@ -107,9 +77,7 @@ app.post("/create-checkout-session", async (req, res) => {
     const isObject = answers && typeof answers === "object" && !Array.isArray(answers);
     const isArray = Array.isArray(answers);
 
-    if (!isObject && !isArray) {
-      return res.status(400).json({ error: "Missing answers." });
-    }
+    if (!isObject && !isArray) return res.status(400).json({ error: "Missing answers." });
 
     const normalizedAnswers = isArray
       ? answers.reduce((acc, value, index) => {
@@ -133,7 +101,6 @@ app.post("/create-checkout-session", async (req, res) => {
     });
 
     attempts.set(session.id, { traits, archetype });
-
     return res.json({ url: session.url });
   } catch (error) {
     console.error(error);
@@ -144,19 +111,13 @@ app.post("/create-checkout-session", async (req, res) => {
 app.get("/verify-session", async (req, res) => {
   try {
     const sessionId = req.query.session_id;
-    if (!sessionId) {
-      return res.status(400).json({ error: "Missing session_id." });
-    }
+    if (!sessionId) return res.status(400).json({ error: "Missing session_id." });
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
-    if (session.payment_status !== "paid") {
-      return res.json({ paid: false });
-    }
+    if (session.payment_status !== "paid") return res.json({ paid: false });
 
     const attempt = attempts.get(sessionId);
-    if (!attempt) {
-      return res.status(404).json({ paid: false, error: "Attempt not found." });
-    }
+    if (!attempt) return res.status(404).json({ paid: false, error: "Attempt not found." });
 
     return res.json({
       paid: true,
@@ -173,14 +134,9 @@ app.get("/verify-session", async (req, res) => {
 app.post("/generate-advice", async (req, res) => {
   try {
     const { archetype, traits } = req.body || {};
+    if (!archetype || !traits) return res.status(400).json({ error: "Missing archetype or traits." });
 
-    if (!archetype || !traits) {
-      return res.status(400).json({ error: "Missing archetype or traits." });
-    }
-
-    if (!openaiClient) {
-      return res.json({ advice: fallbackAdvice });
-    }
+    if (!openaiClient) return res.json({ advice: fallbackAdvice });
 
     const prompt = `You are a coach for dating communication. Provide 8-12 practical bullet points and 2 message scripts.
 
