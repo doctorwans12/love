@@ -80,7 +80,7 @@
             <div id="preview-lock" class="locked-overlay"></div>
         </div>
         <div class="preview-cta" id="preview-cta">
-            <button id="preview-cta-primary" class="btn btn-start" onclick="pay(false)"></button>
+            <button id="preview-cta-primary" class="btn btn-start" onclick="pay()"></button>
             <button id="preview-cta-basic" class="btn btn-opt" onclick="showBasicOnly()"></button>
             <div id="preview-trust" class="trust-text"></div>
         </div>
@@ -105,7 +105,7 @@
 
 <div id="footerBar" class="float-bar">
     <span id="footer-title" class="float-title"></span>
-    <button id="footer-cta-primary" class="btn btn-wish" onclick="pay(false)"></button>
+    <button id="footer-cta-primary" class="btn btn-wish" onclick="pay()"></button>
     <button id="footer-cta-basic" class="btn btn-no" onclick="showBasicOnly()"></button>
     <div id="footer-trust" class="trust-text"></div>
 </div>
@@ -1437,10 +1437,10 @@ Flirten bedeutet nicht zu beeindrucken. Es geht darum, zu verbinden.`,
         document.getElementById('footerBar').style.display = 'none';
     }
 
-    function pay(sub) {
+    function pay() {
         const choice = bestChoice();
         localStorage.setItem("lastPlanChoice", choice);
-        window.location.href = `/pay-session?subscribe=${sub}&choice=${choice}`;
+        window.location.href = `/pay-session?choice=${choice}`;
     }
 
     window.onload = () => {
