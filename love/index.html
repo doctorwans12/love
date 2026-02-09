@@ -1,825 +1,349 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Love Talk Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What type of training suits me?</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <style>
+        body { font-family: 'Arial', sans-serif; background: #f8f9fa; margin: 0; color: #333; padding-bottom: 150px; }
+        .container { max-width: 800px; margin: 40px auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .logo { max-width: 280px; display: block; margin: 0 auto 20px; }
+        .section { display: none; }
+        .active { display: block; }
+        .btn { padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .btn-start { background: #000; color: white; width: 100%; margin-top: 20px; }
+        .btn-opt { background: #f1f3f5; width: 100%; text-align: left; margin: 8px 0; border: 1px solid #ddd; padding: 15px; }
+        .btn-opt:hover { background: #e2e6ea; }
 
-  <!-- FAVICON (inline, no extra files) -->
-  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22g%22%20cx%3D%2230%25%22%20cy%3D%2220%25%22%20r%3D%2280%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ff7ab2%22/%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ff2f7d%22/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath%20d%3D%22M32%205C19%205%209%2014.2%209%2026.2c0%2010%207.3%2018.6%2017.2%2020.6l5.8%209.2%205.9-9.2C47.7%2044.8%2055%2036.2%2055%2026.2%2055%2014.2%2045%205%2032%205z%22%20fill%3D%22url(%23g)%22/%3E%3Ccircle%20cx%3D%2226%22%20cy%3D%2226%22%20r%3D%222.6%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2226%22%20r%3D%222.6%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2238%22%20cy%3D%2226%22%20r%3D%222.6%22%20fill%3D%22%23fff%22/%3E%3Cpath%20d%3D%22M49%2010c-3.2%200-6%202.2-6%205.7%200%203%202.3%205.4%205.4%205.6l1.8%202.9%201.9-2.9c3.1-.2%205.4-2.6%205.4-5.6C57.5%2012.2%2054.2%2010%2049%2010z%22%20fill%3D%22%23ff3b84%22/%3E%3C/svg%3E' />
+        .manifesto-text { text-align: justify; line-height: 1.8; font-size: 16px; white-space: pre-line; }
+        .roadmap-highlight { background: #fff9db; padding: 20px; border-left: 5px solid #fcc419; margin: 25px 0; font-style: italic; }
 
-  <style>
-    :root{
-      --bg:#0b0b12; --card:#121224; --muted:#a7a7c7; --text:#f2f2ff;
-      --accent:#ff4d8d; --accent2:#ff7ab2; --ok:#2dd4bf; --warn:#fbbf24;
-      --border:rgba(255,255,255,.10);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: radial-gradient(1200px 600px at 20% 0%, rgba(255,77,141,.25), transparent 60%),
-                  radial-gradient(900px 500px at 90% 10%, rgba(45,212,191,.18), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      padding:24px;
-    }
-    .wrap{width:min(920px, 100%)}
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; margin-bottom:18px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:12px;
-    }
-    .logo{
-      width:42px; height:42px; border-radius:12px;
-      display:grid; place-items:center;
-      background: linear-gradient(135deg, rgba(255,77,141,.35), rgba(255,122,178,.15));
-      border:1px solid var(--border);
-      box-shadow: 0 10px 30px rgba(0,0,0,.3);
-    }
-    .brand h1{font-size:16px; margin:0; letter-spacing:.4px}
-    .brand p{margin:0; color:var(--muted); font-size:12px}
-    .pill{
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      padding:8px 10px;
-      border-radius:999px;
-      color:var(--muted);
-      font-size:12px;
-    }
+        .float-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: white; box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
+            padding: 20px 0; z-index: 9999; text-align: center;
+            display: none;
+        }
+        .btn-wish { background: #28a745; color: white; margin: 0 10px; min-width: 150px; }
+        .btn-no { background: #dc3545; color: white; margin: 0 10px; min-width: 150px; }
+        .float-title { display: block; margin-bottom: 10px; font-weight: bold; font-size: 18px; color: #000; }
 
-    .card{
-      background: rgba(18,18,36,.78);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 18px 50px rgba(0,0,0,.35);
-      backdrop-filter: blur(10px);
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:16px;
-    }
-    @media (max-width: 860px){
-      .grid{grid-template-columns:1fr}
-    }
-
-    .title{font-size:26px; margin:6px 0 8px}
-    .subtitle{color:var(--muted); margin:0 0 14px; line-height:1.5}
-
-    .btnrow{display:flex; gap:10px; flex-wrap:wrap}
-    button{
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.06);
-      color:var(--text);
-      padding: 12px 14px;
-      border-radius: 12px;
-      cursor:pointer;
-      font-weight:700;
-      letter-spacing:.2px;
-      transition: transform .06s ease, background .2s ease;
-    }
-    button:hover{background: rgba(255,255,255,.10)}
-    button:active{transform: translateY(1px)}
-    .primary{
-      border-color: rgba(255,77,141,.45);
-      background: linear-gradient(135deg, rgba(255,77,141,.35), rgba(255,122,178,.20));
-    }
-    .primary:hover{background: linear-gradient(135deg, rgba(255,77,141,.45), rgba(255,122,178,.28))}
-    .ghost{background: transparent}
-
-    .divider{height:1px; background: var(--border); margin:14px 0}
-
-    .qhead{
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
-      margin-bottom:12px;
-    }
-    .qhead .progress{color:var(--muted); font-size:13px}
-    .qhead .bar{
-      flex:1;
-      height:10px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      overflow:hidden;
-    }
-    .qhead .bar > div{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-    }
-
-    .question{font-size:20px; margin:6px 0 12px; line-height:1.35}
-    .options{display:grid; gap:10px}
-    .opt{
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      padding: 12px;
-      border-radius: 14px;
-      cursor:pointer;
-      display:flex; gap:10px; align-items:flex-start;
-      transition: background .2s ease, border-color .2s ease;
-    }
-    .opt:hover{background: rgba(255,255,255,.08)}
-    .opt.selected{
-      border-color: rgba(255,77,141,.55);
-      background: rgba(255,77,141,.12);
-    }
-    .opt .tag{
-      width:26px; height:26px; border-radius:10px;
-      display:grid; place-items:center;
-      background: rgba(255,255,255,.06);
-      border:1px solid var(--border);
-      font-weight:800;
-      color:rgba(255,255,255,.9);
-      flex:0 0 auto;
-    }
-    .opt .txt{line-height:1.35}
-    .opt .txt .small{display:block; color:var(--muted); font-size:12px; margin-top:4px}
-
-    .scale{
-      display:flex; gap:10px; flex-wrap:wrap;
-    }
-    .chip{
-      min-width:44px;
-      text-align:center;
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      cursor:pointer;
-      font-weight:800;
-    }
-    .chip.selected{
-      border-color: rgba(255,77,141,.55);
-      background: rgba(255,77,141,.12);
-    }
-
-    .side h3{margin:6px 0 8px; font-size:14px; color:rgba(255,255,255,.9)}
-    .side p{margin:0; color:var(--muted); line-height:1.55; font-size:13px}
-    .hint{
-      margin-top:12px;
-      padding:12px;
-      border-radius:14px;
-      border:1px dashed rgba(255,255,255,.18);
-      color:var(--muted);
-      background: rgba(255,255,255,.03);
-      font-size:13px;
-      line-height:1.5;
-    }
-
-    .resultBox{
-      padding:14px;
-      border-radius:16px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-    }
-    .bigType{font-size:22px; margin:4px 0 6px}
-    .desc{margin:0; color:var(--muted); line-height:1.5}
-    .traits{display:grid; gap:10px; margin-top:12px}
-    .trait{
-      display:grid; grid-template-columns: 1fr auto; gap:10px;
-      align-items:center;
-    }
-    .trait .name{color:rgba(255,255,255,.9); font-weight:700; font-size:13px}
-    .trait .val{color:var(--muted); font-weight:800; font-size:13px}
-    .meter{
-      grid-column:1 / -1;
-      height:10px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      overflow:hidden;
-    }
-    .meter > div{height:100%; width:0%; background: linear-gradient(90deg, var(--ok), var(--accent));}
-
-    .lock{
-      display:flex; align-items:center; gap:10px;
-      padding:12px;
-      border-radius:14px;
-      border:1px solid rgba(251,191,36,.35);
-      background: rgba(251,191,36,.10);
-      color: rgba(255,255,255,.92);
-      margin-top:12px;
-      font-size:13px;
-    }
-
-    pre{
-      white-space:pre-wrap;
-      background: rgba(0,0,0,.25);
-      border: 1px solid var(--border);
-      padding:12px;
-      border-radius:14px;
-      color: rgba(255,255,255,.92);
-      line-height:1.5;
-      font-size:13px;
-    }
-
-    .hidden{display:none !important;}
-    .row{
-      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
-    }
-    .smallmuted{color:var(--muted); font-size:12px}
-  </style>
+        .result-display-box { background: #e7f5ff; border: 2px solid #228be6; padding: 30px; border-radius: 10px; margin-top: 20px; }
+        .preview-box { position: relative; overflow: hidden; }
+        .blurred { filter: blur(6px); user-select: none; }
+        .locked-overlay {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.7); font-weight: bold; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .preview-list { margin: 15px 0 0; padding-left: 20px; }
+        .preview-cta { margin-top: 20px; text-align: center; }
+        .preview-cta .btn { width: 100%; margin-bottom: 10px; }
+        .trust-text { font-size: 14px; color: #555; margin-top: 8px; }
+    </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <!-- LOGO (inline SVG, no extra files) -->
-        <div class="logo" aria-label="Love Talk Test logo">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="28" height="28" role="img" aria-hidden="true">
-            <defs>
-              <radialGradient id="g" cx="30%" cy="20%" r="80%">
-                <stop offset="0%" stop-color="#ff7ab2"/>
-                <stop offset="100%" stop-color="#ff2f7d"/>
-              </radialGradient>
-            </defs>
-            <path d="M32 5C19 5 9 14.2 9 26.2c0 10 7.3 18.6 17.2 20.6l5.8 9.2 5.9-9.2C47.7 44.8 55 36.2 55 26.2 55 14.2 45 5 32 5z" fill="url(#g)"/>
-            <circle cx="26" cy="26" r="2.6" fill="#fff"/>
-            <circle cx="32" cy="26" r="2.6" fill="#fff"/>
-            <circle cx="38" cy="26" r="2.6" fill="#fff"/>
-            <path d="M49 10c-3.2 0-6 2.2-6 5.7 0 3 2.3 5.4 5.4 5.6l1.8 2.9 1.9-2.9c3.1-.2 5.4-2.6 5.4-5.6C57.5 12.2 54.2 10 49 10z" fill="#ff3b84"/>
-          </svg>
-        </div>
 
-        <div>
-          <h1>Love Talk Test</h1>
-          <p>How you message when you like someone</p>
-        </div>
-      </div>
-      <div class="pill" id="statusPill">Not paid</div>
+<div class="container">
+    <div id="intro" class="section active">
+        <img src="logo.png" alt="Logo" class="logo">
+        <p>This test is designed by professionals in the field of sports and will guide you toward a type of sport that suits you, based on the answers you provide. Take your time and answer honestly.</p>
+        <button class="btn btn-start" onclick="navigate('quiz')">Continue</button>
     </div>
 
-    <div class="grid">
-      <div class="card" id="mainCard">
-        <!-- LANDING -->
-        <section id="screenLanding">
-          <h2 class="title">How do you talk to the person you like?</h2>
-          <p class="subtitle">
-            This test shows your dating communication style and gives real advice to become more confident and sociable.
-          </p>
-          <div class="btnrow">
-            <button class="primary" id="btnStart">Start the test</button>
-            <button class="ghost" id="btnDemoFill">Demo: auto-fill answers</button>
-          </div>
-          <div class="divider"></div>
-          <p class="smallmuted">Takes ~2 minutes. Your results unlock after payment.</p>
-        </section>
+    <div id="quiz" class="section">
+        <h2 id="q-title" style="text-align:center;"></h2>
+        <div id="q-options"></div>
+    </div>
 
-        <!-- QUIZ -->
-        <section id="screenQuiz" class="hidden">
-          <div class="qhead">
-            <div class="progress" id="progressText">Question 1/16</div>
-            <div class="bar" aria-hidden="true"><div id="progressBar"></div></div>
-          </div>
-
-          <div class="question" id="qText"></div>
-
-          <div id="qOptions" class="options hidden"></div>
-          <div id="qScale" class="scale hidden"></div>
-
-          <div class="divider"></div>
-          <div class="btnrow">
-            <button id="btnBack">Back</button>
-            <button class="primary" id="btnNext">Next</button>
-          </div>
-        </section>
-
-        <!-- ALMOST DONE -->
-        <section id="screenPay" class="hidden">
-          <h2 class="title">Almost done ✅</h2>
-          <p class="subtitle">
-            Your result is ready, but it’s locked until payment.
-          </p>
-
-          <div class="resultBox" id="previewBox">
-            <div class="row">
-              <div>
-                <div class="smallmuted">Preview</div>
-                <div class="bigType" id="previewType">—</div>
-              </div>
-              <div class="smallmuted">Locked</div>
+    <div id="result-preview" class="section">
+        <h2 style="text-align:center;">Your Result Preview</h2>
+        <div class="result-display-box preview-box">
+            <div id="preview-content">
+                <h2 id="preview-title" style="margin-top:0;"></h2>
+                <ul id="preview-points" class="preview-list"></ul>
             </div>
-            <p class="desc" id="previewDesc">—</p>
-
-            <div class="lock">🔒 Pay to unlock your full result + personalized advice.</div>
-          </div>
-
-          <div class="divider"></div>
-          <div class="btnrow">
-            <button class="primary" id="btnPay">See the results</button>
-            <button class="ghost" id="btnRestart">Restart</button>
-          </div>
-          <p class="smallmuted" id="payNote"></p>
-        </section>
-
-        <!-- RESULTS -->
-        <section id="screenResults" class="hidden">
-          <h2 class="title">Your result</h2>
-          <p class="subtitle">Unlocked ✅</p>
-
-          <div class="resultBox">
-            <div class="bigType" id="resultType">—</div>
-            <p class="desc" id="resultDesc">—</p>
-
-            <div class="traits" id="traitsBox"></div>
-          </div>
-
-          <div class="divider"></div>
-          <div class="btnrow">
-            <button class="primary" id="btnContinue">Continue</button>
-            <button class="ghost" id="btnRetake">Retake</button>
-          </div>
-        </section>
-
-        <!-- ADVICE -->
-        <section id="screenAdvice" class="hidden">
-          <h2 class="title">Personal advice</h2>
-          <p class="subtitle">Practical + not cringe.</p>
-
-          <pre id="adviceText">Loading...</pre>
-
-          <div class="divider"></div>
-          <div class="btnrow">
-            <button class="primary" id="btnBackToResults">Back to results</button>
-            <button class="ghost" id="btnRetake2">Retake</button>
-          </div>
-        </section>
-      </div>
-
-      <div class="card side">
-        <h3>How it works</h3>
-        <p>
-          Answer 16 quick questions about texting + dating vibes. After payment, you’ll unlock your archetype,
-          trait scores, and personalized advice with message scripts.
-        </p>
-        <div class="hint">
-          Tip: Don’t aim for “perfect texting”. Aim for <b>clear</b>, <b>consistent</b>, and <b>warm</b>.
+            <div id="preview-lock" class="locked-overlay">Locked Preview</div>
         </div>
-        <div class="hint" id="returnHint" style="display:none;">
-          You returned from Stripe. If payment succeeded, your result will unlock automatically.
+        <div class="preview-cta" id="preview-cta">
+            <button class="btn btn-start" onclick="pay(false)">Unlock full result — $1</button>
+            <button class="btn btn-opt" onclick="pay(true)">Unlock + Roadmap (subscription)</button>
+            <button class="btn btn-opt" onclick="showBasicOnly()">No thanks, show only basic result</button>
+            <div class="trust-text">One-time payment • Instant access • No automatic subscription</div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <script>
-    // ---------------------------
-    // Quiz data (16 questions)
-    // ---------------------------
-    const QUESTIONS = [
-      { id: 1, type: "scale", text: "How confident are you starting a conversation with someone you like?" },
-      { id: 2, type: "choice", text: "What’s your usual first message?", options: [
-        { key:"a", label:"“Hey” / “Hi”", sub:"Simple and safe." },
-        { key:"b", label:"A witty opener about their profile/story", sub:"Playful + engaging." },
-        { key:"c", label:"A long paragraph explaining everything", sub:"Deep… but can feel intense." },
-        { key:"d", label:"I don’t message first", sub:"I wait and hope they do." }
-      ]},
-      { id: 3, type: "scale", text: "How balanced is your reply speed? (1 = too fast, 5 = too slow)" },
-      { id: 4, type: "choice", text: "They saw your message but didn’t reply. You…", options: [
-        { key:"a", label:"Stay calm and wait", sub:"No chasing." },
-        { key:"b", label:"Send one polite follow-up later", sub:"Clear and respectful." },
-        { key:"c", label:"Send 2–3 messages until they respond", sub:"Anxiety spike." },
-        { key:"d", label:"Ghost them back", sub:"Ego protection." }
-      ]},
-      { id: 5, type: "scale", text: "How comfortable are you flirting?" },
-      { id: 6, type: "choice", text: "Your compliment style is:", options: [
-        { key:"a", label:"Generic: “You’re cute”", sub:"Okay, but forgettable." },
-        { key:"b", label:"Specific: “Your smile + vibe is addictive”", sub:"Best option." },
-        { key:"c", label:"Too intense: “I think you’re my soulmate”", sub:"Can scare people." },
-        { key:"d", label:"I avoid compliments", sub:"I don’t want to seem needy." }
-      ]},
-      { id: 7, type: "scale", text: "After sending a message, how much do you overthink it?" },
-      { id: 8, type: "choice", text: "When it’s time to meet, you…", options: [
-        { key:"a", label:"Suggest a specific plan (day + place)", sub:"Confident + clear." },
-        { key:"b", label:"Hint: “We should hang sometime”", sub:"Vague." },
-        { key:"c", label:"Wait for them to suggest", sub:"Low initiative." },
-        { key:"d", label:"Avoid meeting and keep texting", sub:"Safety zone." }
-      ]},
-      { id: 9, type: "scale", text: "How emotionally open are you when you like someone?" },
-      { id: 10, type: "choice", text: "How often do you use humor in flirting?", options: [
-        { key:"a", label:"Often", sub:"Good spark." },
-        { key:"b", label:"Sometimes", sub:"Balanced." },
-        { key:"c", label:"Rarely", sub:"More serious." },
-        { key:"d", label:"Never", sub:"Straight to the point." }
-      ]},
-      { id: 11, type: "scale", text: "How consistent are you (not disappearing for days)?" },
-      { id: 12, type: "choice", text: "Your boundaries in dating are:", options: [
-        { key:"a", label:"Clear and respectful", sub:"Healthy." },
-        { key:"b", label:"Flexible but fair", sub:"Usually fine." },
-        { key:"c", label:"I people-please", sub:"Risky." },
-        { key:"d", label:"I build walls", sub:"Avoiding closeness." }
-      ]},
-      { id: 13, type: "scale", text: "Texting vs real life: how comfortable are you in person? (1 = texting only, 5 = IRL easy)" },
-      { id: 14, type: "choice", text: "If they flirt first, you…", options: [
-        { key:"a", label:"Match their energy", sub:"Best." },
-        { key:"b", label:"Get shy and go quiet", sub:"Nervous." },
-        { key:"c", label:"Ignore it", sub:"Missed opportunity." },
-        { key:"d", label:"Go too intense", sub:"Can overwhelm." }
-      ]},
-      { id: 15, type: "scale", text: "How clear are you about what you want with them?" },
-      { id: 16, type: "choice", text: "When they take hours to reply, you…", options: [
-        { key:"a", label:"Stay chill and focus on your day", sub:"Secure energy." },
-        { key:"b", label:"Send a light follow-up later", sub:"Balanced." },
-        { key:"c", label:"Double-text quickly", sub:"Anxiety spike." },
-        { key:"d", label:"Pull back or ghost", sub:"Protection mode." }
-      ]}
+    <div id="manifesto" class="section">
+        <div class="manifesto-text">
+  To discover the fighting style that truly fits you, you must first understand your mindset, body type, and instinctive reactions under pressure.
+Some fighters thrive on explosive power and direct impact, while others dominate through patience, timing, and precision.
+Your ideal combat style reflects how you move, think, and adapt when challenged.
+
+Striking styles like boxing, kickboxing, or Muay Thai favor those with sharp reflexes, aggression, and a taste for controlled chaos.
+If you prefer strategy, leverage, and mental warfare, grappling arts such as Brazilian Jiu-Jitsu or wrestling may suit you perfectly.
+Speed, endurance, and discipline often lead fighters toward styles like taekwondo or karate, where technique is king.
+
+Hybrid fighters who hate limits usually gravitate toward MMA, blending multiple disciplines into a complete fighting system.
+Traditional martial arts appeal to those seeking balance, respect, and inner strength alongside physical skill.
+No style is superior—only the one that matches your natural instincts and long-term goals.
+
+A true fighter listens to their body, learns from defeat, and evolves constantly.
+Training the right style builds confidence, mental toughness, and unshakable self-control.
+
+
+Why you should continue with us: Most people never reach their potential because they train without direction or identity.
+By following our guidance, you’ll discover the fighting style that amplifies your strengths and hides your weaknesses.
+This isn’t just about learning how to fight—it’s about becoming dangerous in a controlled, intelligent way.
+Our experts break down combat psychology and martial arts science to guide you step by step.
+Your fighting style is your signature—define it, sharpen it, and own it.
+           
+            
+            Do you wish to see your professional result?
+        </div>
+    </div>
+
+    <div id="success-view" class="section">
+        <h1 style="color: #28a745;">Payment Successful! ✔️</h1>
+        <div class="result-display-box">
+            <h2 id="final-type" style="margin-top:0;"></h2>
+            <p id="final-desc" style="font-size: 18px;"></p>
+            <hr>
+            <p id="email-notif" style="font-weight: bold; color: #28a745;"></p>
+            <p>Your Congrats!</p>
+            <p style="color: #d9480f;"><strong>good luck with training!</strong></p>
+        </div>
+        <button class="btn btn-start" onclick="window.location.href='/'">Take the test again</button>
+    </div>
+</div>
+
+<div id="footerBar" class="float-bar">
+    <span class="float-title">Unlock your full result now</span>
+    <button class="btn btn-wish" onclick="pay(false)">Unlock full result — $1</button>
+    <button class="btn btn-no" onclick="showBasicOnly()">No thanks, show only basic result</button>
+    <div class="trust-text">One-time payment • Instant access • No automatic subscription</div>
+</div>
+
+<script>
+    const questions = [
+        {
+            q: "What feels most natural in a fight?",
+            a: ["Moving in and throwing combos", "Clinch, trips, and control", "Mixing ranges", "Keeping tight form and distance"]
+        },
+        { q: "What is your biggest strength?",
+          a: ["Power and pressure", "Leverage and balance", "Adaptability", "Discipline and precision"] },
+
+        { q: "How do you like to win?",
+          a: ["Overwhelm with volume", "Control and wear them down", "Find the right moment", "Outclass with technique"] },
+
+        { q: "What kind of footwork fits you best?",
+          a: ["Forward pressure", "Small steps and angles", "Switching stances", "Classic, tight boxing steps"] },
+
+        { q: "What pace do you prefer?",
+          a: ["High pace", "Methodical", "Adjusting as needed", "Measured and clean"] },
+
+        { q: "What do you focus on in sparring?",
+          a: ["Landing big shots", "Clinch control", "Mixing in takedowns", "Timing and counters"] },
+
+        { q: "What’s your favorite range?",
+          a: ["Pocket fighting", "Clinch and inside", "Both inside and outside", "Mid-range with jab"] },
+
+        { q: "How do you handle pressure?",
+          a: ["Push forward", "Tie up and reset", "Change levels and move", "Stay composed and counter"] },
+
+        { q: "What kind of training excites you most?",
+          a: ["Heavy bag power rounds", "Grappling drills", "MMA-style circuits", "Pad work and timing"] },
+
+        { q: "What describes your mindset?",
+          a: ["Relentless", "Patient", "Versatile", "Focused"] },
+
+        { q: "How do you like to set up attacks?",
+          a: ["Feints into big hooks", "Grip fighting", "Jab into level change", "Jab and sharp counters"] },
+
+        { q: "Which defense is your go-to?",
+          a: ["Slip and fire back", "Clinch and smother", "Sprawl and circle", "High guard and counters"] },
+
+        { q: "What does a perfect round look like?",
+          a: ["High volume and damage", "Control and position wins", "Mix of striking and control", "Clean technique and dominance"] },
+
+        { q: "How do you recover between rounds?",
+          a: ["Deep breaths, keep pressure", "Slow it down, reset", "Adjust the plan", "Stay calm and technical"] },
+
+        { q: "What’s your ideal coach feedback?",
+          a: ["Let your hands go", "Stay heavy and tight", "Blend ranges", "Keep it crisp and sharp"] },
+
+        { q: "How do you approach endurance?",
+          a: ["Push through on grit", "Pace with control", "Mix bursts and recovery", "Efficiency over volume"] },
+
+        { q: "What makes you dangerous?",
+          a: ["Raw power", "Control in the clinch", "Unpredictability", "Perfect timing"] },
+
+        { q: "Which fighter style do you admire most?",
+          a: ["Brawler", "Grappling specialist", "Complete fighter", "Traditional technician"] },
+
+        { q: "When things go wrong, you…",
+          a: ["Swing back harder", "Tie up and reset", "Switch tactics", "Stay disciplined"] },
+
+        { q: "What’s your long-term goal?",
+          a: ["Be feared for power", "Be unbeatable in control", "Be complete in all areas", "Master the fundamentals"] }
     ];
 
-    // Client-side scoring (preview only; server will recompute for truth)
-    function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
-    function scaleToDelta(v){ const num=Number(v); if(!Number.isFinite(num)) return 0; return (num-3)*10; }
-
-    function scoreClient(answers){
-      const traits = { confidence:50, clarity:50, playfulness:50, availability:50, consistency:50, anxiety:50 };
-      const A = answers;
-      const add=(t,d)=> traits[t]=clamp(traits[t]+d,0,100);
-
-      add("confidence", scaleToDelta(A[0]?.value));
-      add("anxiety", -scaleToDelta(A[0]?.value));
-
-      switch (A[1]?.value){
-        case "b": add("playfulness",+12); add("clarity",+8); add("confidence",+8); break;
-        case "c": add("availability",+8); add("anxiety",+10); add("clarity",-8); break;
-        case "d": add("anxiety",+14); add("confidence",-12); add("consistency",-6); break;
-        default: add("clarity",+2); break;
-      }
-
-      { const v=Number(A[2]?.value);
-        if(v===3){ add("consistency",+10); add("anxiety",-6); }
-        else if(v<=2){ add("anxiety",+8); add("availability",+6); add("clarity",-2); }
-        else if(v>=4){ add("consistency",-6); add("clarity",-2); }
-      }
-
-      switch (A[3]?.value){
-        case "a": add("confidence",+10); add("anxiety",-10); add("consistency",+4); break;
-        case "b": add("clarity",+8); add("consistency",+6); add("anxiety",+2); break;
-        case "c": add("anxiety",+14); add("clarity",-6); add("confidence",-6); break;
-        case "d": add("consistency",-12); add("availability",-8); add("anxiety",+4); break;
-      }
-
-      add("playfulness", scaleToDelta(A[4]?.value));
-      add("confidence", scaleToDelta(A[4]?.value)*0.6);
-
-      switch (A[5]?.value){
-        case "b": add("clarity",+10); add("availability",+6); break;
-        case "c": add("availability",+10); add("anxiety",+6); add("clarity",-6); break;
-        case "d": add("clarity",-6); add("confidence",-4); break;
-        default: add("clarity",+2); break;
-      }
-
-      add("anxiety", scaleToDelta(A[6]?.value));
-      add("confidence", -scaleToDelta(A[6]?.value)*0.5);
-
-      switch (A[7]?.value){
-        case "a": add("clarity",+12); add("confidence",+10); add("consistency",+6); break;
-        case "b": add("playfulness",+6); add("clarity",-2); break;
-        case "c": add("consistency",-6); add("anxiety",+6); break;
-        case "d": add("availability",-12); add("anxiety",+10); add("confidence",-6); break;
-      }
-
-      add("availability", scaleToDelta(A[8]?.value));
-      add("clarity", scaleToDelta(A[8]?.value)*0.4);
-
-      switch (A[9]?.value){
-        case "a": add("playfulness",+12); add("confidence",+4); break;
-        case "b": add("playfulness",+6); break;
-        case "c": add("playfulness",-4); break;
-        case "d": add("playfulness",-10); break;
-      }
-
-      add("consistency", scaleToDelta(A[10]?.value));
-      add("anxiety", -scaleToDelta(A[10]?.value)*0.3);
-
-      switch (A[11]?.value){
-        case "a": add("clarity",+10); add("confidence",+6); add("availability",+2); break;
-        case "b": add("availability",+4); break;
-        case "c": add("anxiety",+10); add("clarity",-6); break;
-        case "d": add("availability",-10); add("confidence",+2); add("clarity",-2); break;
-      }
-
-      add("confidence", scaleToDelta(A[12]?.value));
-      add("anxiety", -scaleToDelta(A[12]?.value));
-
-      switch (A[13]?.value){
-        case "a": add("confidence",+8); add("playfulness",+8); add("clarity",+4); break;
-        case "b": add("anxiety",+6); add("availability",+2); break;
-        case "c": add("availability",-8); add("consistency",-4); break;
-        case "d": add("anxiety",+10); add("clarity",-6); add("confidence",-2); break;
-      }
-
-      add("clarity", scaleToDelta(A[14]?.value));
-      add("confidence", scaleToDelta(A[14]?.value)*0.4);
-
-      switch (A[15]?.value){
-        case "a": add("confidence",+8); add("anxiety",-8); add("consistency",+4); break;
-        case "b": add("clarity",+6); add("consistency",+4); break;
-        case "c": add("anxiety",+10); add("clarity",-4); break;
-        case "d": add("availability",-8); add("consistency",-6); break;
-      }
-
-      const t=traits;
-      let archetype="Friendly but Vague";
-      let description="You’re warm and likable, but your messages can be unclear. A little more directness will make your dating life easier.";
-
-      if(t.anxiety>=70 && t.clarity<=45){
-        archetype="Overthinker Texter";
-        description="You care a lot, but you spiral after sending messages. The goal: calmer texting + clearer intent.";
-      } else if(t.confidence>=70 && t.playfulness>=65 && t.anxiety<=45){
-        archetype="Confident Flirter";
-        description="You’re bold, fun, and comfortable making moves. Keep it respectful and consistent.";
-      } else if(t.consistency<=40 && t.availability<=45){
-        archetype="Avoidant Checker";
-        description="You pop in and out and keep distance. Building trust means showing up more consistently.";
-      } else if(t.playfulness<=40 && t.clarity<=50){
-        archetype="Dry Responder";
-        description="Your replies can feel short or flat. Add warmth, questions, and small sparks of personality.";
-      } else if(t.availability>=65 && t.clarity>=60 && t.playfulness>=50){
-        archetype="Warm Storyteller";
-        description="You connect through warmth and good conversation. Keep your messages focused and action-oriented.";
-      }
-
-      return { traits, archetype, description };
-    }
-
-    // App state
-    const answers = Array(16).fill(null);
-    let idx = 0;
-    let paid = false;
-    let unlocked = null;
-
-    // Elements
-    const statusPill = document.getElementById("statusPill");
-    const returnHint = document.getElementById("returnHint");
-
-    const screens = {
-      landing: document.getElementById("screenLanding"),
-      quiz: document.getElementById("screenQuiz"),
-      pay: document.getElementById("screenPay"),
-      results: document.getElementById("screenResults"),
-      advice: document.getElementById("screenAdvice")
-    };
-
-    const btnStart = document.getElementById("btnStart");
-    const btnDemoFill = document.getElementById("btnDemoFill");
-    const btnBack = document.getElementById("btnBack");
-    const btnNext = document.getElementById("btnNext");
-    const btnPay = document.getElementById("btnPay");
-    const btnRestart = document.getElementById("btnRestart");
-    const btnRetake = document.getElementById("btnRetake");
-    const btnRetake2 = document.getElementById("btnRetake2");
-    const btnContinue = document.getElementById("btnContinue");
-    const btnBackToResults = document.getElementById("btnBackToResults");
-
-    const progressText = document.getElementById("progressText");
-    const progressBar = document.getElementById("progressBar");
-    const qText = document.getElementById("qText");
-    const qOptions = document.getElementById("qOptions");
-    const qScale = document.getElementById("qScale");
-
-    const previewType = document.getElementById("previewType");
-    const previewDesc = document.getElementById("previewDesc");
-    const payNote = document.getElementById("payNote");
-
-    const resultType = document.getElementById("resultType");
-    const resultDesc = document.getElementById("resultDesc");
-    const traitsBox = document.getElementById("traitsBox");
-    const adviceText = document.getElementById("adviceText");
-
-    function show(name){
-      Object.values(screens).forEach(s => s.classList.add("hidden"));
-      screens[name].classList.remove("hidden");
-    }
-
-    function setPaid(isPaid){
-      paid = isPaid;
-      statusPill.textContent = isPaid ? "Paid ✅" : "Not paid";
-      statusPill.style.borderColor = isPaid ? "rgba(45,212,191,.35)" : "rgba(255,255,255,.10)";
-    }
-
-    function renderQuestion(){
-      const q = QUESTIONS[idx];
-      progressText.textContent = `Question ${idx+1}/16`;
-      progressBar.style.width = `${((idx+1)/16)*100}%`;
-      qText.textContent = q.text;
-
-      qOptions.classList.add("hidden");
-      qScale.classList.add("hidden");
-      qOptions.innerHTML = "";
-      qScale.innerHTML = "";
-
-      const current = answers[idx];
-
-      if(q.type === "choice"){
-        qOptions.classList.remove("hidden");
-        q.options.forEach((o, i) => {
-          const div = document.createElement("div");
-          div.className = "opt" + (current?.value === o.key ? " selected" : "");
-          div.innerHTML = `
-            <div class="tag">${String.fromCharCode(65+i)}</div>
-            <div class="txt">
-              <div><b>${o.label}</b></div>
-              <span class="small">${o.sub || ""}</span>
-            </div>
-          `;
-          div.onclick = () => {
-            answers[idx] = { type:"choice", value:o.key };
-            renderQuestion();
-          };
-          qOptions.appendChild(div);
-        });
-      } else {
-        qScale.classList.remove("hidden");
-        for(let v=1; v<=5; v++){
-          const chip = document.createElement("div");
-          chip.className = "chip" + (Number(current?.value) === v ? " selected" : "");
-          chip.textContent = v;
-          chip.onclick = () => {
-            answers[idx] = { type:"scale", value:v };
-            renderQuestion();
-          };
-          qScale.appendChild(chip);
+    const resultsData = {
+        striker: {
+            name: "BRAWLER – PRESSURE BOXER",
+            desc: "You thrive on forward pressure, heavy hands, and relentless volume. Your style is built on forcing exchanges, breaking rhythm, and winning with grit. Focus on body shots, tight hooks, and conditioning so your pace never drops."
+        },
+        grappler: {
+            name: "CLINCH FIGHTER – CONTROL SPECIALIST",
+            desc: "You dominate by smothering, tying up, and controlling the fight in close. Your strength is leverage, balance, and patience. Train clinch entries, control positions, and short strikes that wear opponents down."
+        },
+        hybrid: {
+            name: "COMPLETE FIGHTER – MIXED STYLE",
+            desc: "You’re the adaptable fighter who blends pressure with control. You can box, clinch, and switch tactics based on the moment. Keep drilling transitions, stance changes, and timing so you stay unpredictable."
+        },
+        traditional: {
+            name: "TECHNICIAN – CLASSIC BOXING STYLE",
+            desc: "You win with clean fundamentals: sharp jabs, tight defense, and smart counters. Your strength is precision and discipline. Focus on footwork, timing, and efficiency to outclass opponents over rounds."
         }
-      }
+    };
 
-      btnBack.disabled = idx === 0;
-      btnNext.textContent = idx === 15 ? "Finish" : "Next";
+    const scoreKeys = ["striker", "grappler", "hybrid", "traditional"];
+
+    const buildScores = () => scoreKeys.reduce((acc, key) => {
+        acc[key] = 0;
+        return acc;
+    }, {});
+
+    let current = 0;
+    let scores = buildScores();
+
+    const previewPoints = {
+        striker: [
+            "Pressure-first offense and heavy hands",
+            "Inside combinations and body work",
+            "Conditioning to keep a high pace",
+            "Short, explosive hooks and uppercuts"
+        ],
+        grappler: [
+            "Clinch entries and control positions",
+            "Balance, leverage, and smothering pressure",
+            "Dirty boxing and short strikes",
+            "Patience to break opponents down"
+        ],
+        hybrid: [
+            "Blend pressure with control",
+            "Switch ranges and tactics smoothly",
+            "Unpredictable rhythm and timing",
+            "Well-rounded skill development"
+        ],
+        traditional: [
+            "Clean jab and sharp counters",
+            "Footwork and distance control",
+            "Disciplined defense and composure",
+            "Efficiency over wasted motion"
+        ]
+    };
+
+    function bestChoice() {
+        return scoreKeys.reduce((best, key) => scores[key] > scores[best] ? key : best, scoreKeys[0]);
     }
 
-    function allAnswered(){
-      return answers.every(a => a && (a.value !== null && a.value !== undefined));
-    }
-
-    function goPayScreen(){
-      const preview = scoreClient(answers);
-      previewType.textContent = preview.archetype;
-      previewDesc.textContent = preview.description;
-      payNote.textContent = allAnswered() ? "" : "Please answer all questions first.";
-      show("pay");
-    }
-
-    function renderTraits(traits){
-      const pretty = [
-        ["Confidence", "confidence"],
-        ["Clarity", "clarity"],
-        ["Playfulness", "playfulness"],
-        ["Emotional availability", "availability"],
-        ["Consistency", "consistency"],
-        ["Anxiety", "anxiety"]
-      ];
-      traitsBox.innerHTML = "";
-      pretty.forEach(([label, key]) => {
-        const val = Math.round(traits[key] ?? 0);
-        const row = document.createElement("div");
-        row.className = "trait";
-        row.innerHTML = `
-          <div class="name">${label}</div>
-          <div class="val">${val}</div>
-          <div class="meter"><div style="width:${val}%"></div></div>
-        `;
-        traitsBox.appendChild(row);
-      });
-    }
-
-    function renderResults(data){
-      unlocked = data;
-      resultType.textContent = data.archetype || "—";
-      resultDesc.textContent = data.description || "";
-      renderTraits(data.traits || {});
-      show("results");
-    }
-
-    async function createCheckout(){
-      if(!allAnswered()){
-        payNote.textContent = "Answer all questions before payment.";
-        return;
-      }
-      btnPay.disabled = true;
-      btnPay.textContent = "Redirecting…";
-      payNote.textContent = "";
-
-      try{
-        const res = await fetch("/create-checkout-session", {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify({ answers })
-        });
-        const data = await res.json();
-        if(!res.ok) throw new Error(data?.error || "Failed to create checkout session");
-        if(!data.url) throw new Error("Missing checkout URL");
-        window.location.href = data.url;
-      }catch(e){
-        payNote.textContent = "Error: " + e.message;
-        btnPay.disabled = false;
-        btnPay.textContent = "See the results";
-      }
-    }
-
-    async function verifyFromUrl(){
-      const params = new URLSearchParams(window.location.search);
-      const sessionId = params.get("session_id");
-      const canceled = params.get("canceled");
-
-      if(canceled){
-        returnHint.style.display = "block";
-        returnHint.textContent = "Payment canceled. You can try again.";
-        setPaid(false);
-        if(allAnswered()) goPayScreen();
-        return;
-      }
-
-      if(!sessionId) return;
-
-      returnHint.style.display = "block";
-      setPaid(false);
-
-      try{
-        const res = await fetch(`/verify-session?session_id=${encodeURIComponent(sessionId)}`);
-        const data = await res.json();
-        if(data.paid){
-          setPaid(true);
-          renderResults(data);
-          const clean = window.location.origin + window.location.pathname;
-          window.history.replaceState({}, "", clean);
-        } else {
-          setPaid(false);
-          goPayScreen();
+    function navigate(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if(id === 'quiz') {
+            current = 0;
+            scores = buildScores();
+            loadQ();
         }
-      }catch(e){
-        setPaid(false);
-        goPayScreen();
-      }
+        if(id === 'result-preview') {
+            document.getElementById('footerBar').style.display = 'block';
+            window.scrollTo(0,0);
+        }
     }
 
-    async function loadAdvice(){
-      if(!paid || !unlocked){
-        adviceText.textContent = "Locked. Please unlock results first.";
-        return;
-      }
-      adviceText.textContent = "Loading...";
-      show("advice");
-
-      try{
-        const res = await fetch("/generate-advice", {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify({ archetype: unlocked.archetype, traits: unlocked.traits })
+    function loadQ() {
+        if (current >= questions.length) {
+            const choice = bestChoice();
+            localStorage.setItem("lastPlanChoice", choice);
+            showPreview(choice);
+            return;
+        }
+        document.getElementById('q-title').innerText = questions[current].q;
+        const container = document.getElementById('q-options');
+        container.innerHTML = '';
+        questions[current].a.forEach(opt => {
+            const b = document.createElement('button');
+            b.className = 'btn btn-opt';
+            b.innerText = opt.t || opt;
+            b.onclick = () => {
+                if (Object.prototype.hasOwnProperty.call(scores, opt.c)) {
+                    scores[opt.c]++;
+                }
+                current++;
+                loadQ();
+            };
+            container.appendChild(b);
         });
-        const data = await res.json();
-        if(!res.ok) throw new Error(data?.error || "Failed to generate advice");
-        adviceText.textContent = data.adviceText || "No advice returned.";
-      }catch(e){
-        adviceText.textContent = "Error: " + e.message;
-      }
     }
 
-    // Events
-    btnStart.onclick = () => { idx = 0; show("quiz"); renderQuestion(); };
-    btnDemoFill.onclick = () => {
-      const demo = [
-        {type:"scale",value:4},{type:"choice",value:"b"},{type:"scale",value:3},{type:"choice",value:"b"},
-        {type:"scale",value:4},{type:"choice",value:"b"},{type:"scale",value:2},{type:"choice",value:"a"},
-        {type:"scale",value:4},{type:"choice",value:"b"},{type:"scale",value:4},{type:"choice",value:"a"},
-        {type:"scale",value:4},{type:"choice",value:"a"},{type:"scale",value:4},{type:"choice",value:"a"}
-      ];
-      for(let i=0;i<16;i++) answers[i]=demo[i];
-      idx = 0;
-      show("quiz");
-      renderQuestion();
-    };
+    function showPreview(choice) {
+        navigate('result-preview');
+        const previewTitle = document.getElementById('preview-title');
+        const previewList = document.getElementById('preview-points');
+        const previewContent = document.getElementById('preview-content');
+        const previewLock = document.getElementById('preview-lock');
 
-    btnBack.onclick = () => { if(idx>0){ idx--; renderQuestion(); } };
-    btnNext.onclick = () => {
-      if(!answers[idx]){ alert("Pick an option first."); return; }
-      if(idx < 15){ idx++; renderQuestion(); }
-      else { goPayScreen(); }
-    };
+        previewTitle.innerText = resultsData[choice].name;
+        previewList.innerHTML = '';
+        (previewPoints[choice] || []).forEach(point => {
+            const li = document.createElement('li');
+            li.innerText = point;
+            previewList.appendChild(li);
+        });
+        previewContent.classList.add('blurred');
+        previewLock.style.display = 'flex';
+    }
 
-    btnPay.onclick = createCheckout;
+    function showBasicOnly() {
+        const previewContent = document.getElementById('preview-content');
+        const previewLock = document.getElementById('preview-lock');
+        const previewCta = document.getElementById('preview-cta');
+        previewContent.classList.remove('blurred');
+        previewLock.style.display = 'none';
+        if (previewCta) previewCta.style.display = 'none';
+        document.getElementById('footerBar').style.display = 'none';
+    }
 
-    btnRestart.onclick = () => {
-      for(let i=0;i<16;i++) answers[i]=null;
-      idx=0; setPaid(false); unlocked=null;
-      show("landing");
-    };
-    btnRetake.onclick = btnRestart.onclick;
-    btnRetake2.onclick = btnRestart.onclick;
+    function pay(sub) {
+        const choice = bestChoice();
+        localStorage.setItem("lastPlanChoice", choice);
+        window.location.href = `/pay-session?subscribe=${sub}&choice=${choice}`;
+    }
 
-    btnContinue.onclick = () => loadAdvice();
-    btnBackToResults.onclick = () => show("results");
+    window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('session_id')) {
+            const plan = params.get('plan');
+            const isSub = params.get('isSub');
+            const savedPlan = localStorage.getItem("lastPlanChoice");
+            const resolvedPlan = resultsData[plan]
+                ? plan
+                : (resultsData[savedPlan] ? savedPlan : null);
 
-    // init
-    setPaid(false);
-    show("landing");
-    verifyFromUrl();
-  </script>
+            navigate('success-view');
+            document.getElementById('footerBar').style.display = 'none';
+
+            if (resolvedPlan) {
+                document.getElementById('final-type').innerText = resultsData[resolvedPlan].name;
+                document.getElementById('final-desc').innerText = resultsData[resolvedPlan].desc;
+            }
+
+            if (isSub === 'true') {
+                const notif = document.getElementById('email-notif');
+                if (notif) notif.innerHTML = "ROADMAP SENT VIA EMAIL! CHECK YOUR INBOX.";
+            }
+        }
+    }
+</script>
 </body>
 </html>
