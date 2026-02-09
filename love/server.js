@@ -173,9 +173,102 @@ app.get("/verify-session", async (req, res) => {
   }
 });
 
+// Generate advice text
+app.post("/generate-advice", (req, res) => {
+  try {
+    const archetype = String(req.body?.archetype || "").trim();
+    const traits = req.body?.traits || {};
+
+    if (!archetype) {
+      return res.status(400).json({ error: "Missing archetype" });
+    }
+
+    const topTraits = Object.entries(traits)
+      .filter(([, value]) => Number.isFinite(Number(value)))
+      .sort((a, b) => Number(b[1]) - Number(a[1]))
+      .slice(0, 2)
+      .map(([key]) => key);
+
+    const adviceByType = {
+      "Overthinker Texter": [
+        "Send shorter messages and end with one clear question.",
+        "Wait 20–30 minutes before sending a follow-up.",
+        "Use a simple opener like: “Hey! How’s your day going?”"
+      ],
+      "Confident Flirter": [
+        "Keep flirting, but pair it with a concrete plan.",
+        "Avoid rapid-fire texts; leave space for them to reply.",
+        "Try: “You seem fun—coffee this week?”"
+      ],
+      "Avoidant Checker": [
+        "Aim for consistency: reply within 24 hours.",
+        "Name your intent once: “I like talking to you.”",
+        "Plan a short, low-pressure meet-up."
+      ],
+      "Dry Responder": [
+        "Add warmth with one emoji or a short compliment.",
+        "Ask open-ended questions to keep momentum.",
+        "Try: “That sounds fun—what made you get into it?”"
+      ],
+      "Friendly but Vague": [
+        "Be direct about interest: “I’d like to take you out.”",
+        "Replace hints with specific plans.",
+        "Close messages with a clear next step."
+      ],
+      "Warm Storyteller": [
+        "Keep your stories shorter and end with a question.",
+        "Match their pace; don’t overshare too early.",
+        "Turn a warm vibe into a plan."
+      ]
+    };
+
+    const baseAdvice = adviceByType[archetype] || [
+      "Keep messages clear, warm, and consistent.",
+      "Ask one open-ended question at a time.",
+      "Suggest a specific plan when the vibe is good."
+    ];
+
+    const traitTips = [];
+    if (topTraits.includes("anxiety")) {
+      traitTips.push("If you feel anxious, draft your message and wait 10 minutes before sending.");
+    }
+    if (topTraits.includes("confidence")) {
+      traitTips.push("Lean into confidence by stating one clear intention.");
+    }
+    if (topTraits.includes("clarity")) {
+      traitTips.push("Keep clarity high: one idea per text.");
+    }
+    if (topTraits.includes("consistency")) {
+      traitTips.push("Consistency builds trust: reply at a steady pace.");
+    }
+    if (topTraits.includes("playfulness")) {
+      traitTips.push("Add light humor or a playful callback to their message.");
+    }
+    if (topTraits.includes("availability")) {
+      traitTips.push("Balance availability with self-respect—don’t over-explain.");
+    }
+
+    const adviceText = [
+      `Archetype: ${archetype}`,
+      "",
+      "What to do next:",
+      ...baseAdvice.map((line) => `- ${line}`),
+      "",
+      "Trait focus:",
+      ...(traitTips.length ? traitTips.map((line) => `- ${line}`) : ["- Keep a balanced pace and stay warm."])
+    ].join("\n");
+
+    res.json({ adviceText });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Advice generation failed" });
+  }
+});
+
 /* --------------------
    Start server
 -------------------- */
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });
+
