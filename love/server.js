@@ -21,17 +21,16 @@ app.use(express.json({ limit: "1mb" }));
 const PORT = Number(process.env.PORT || 3000);
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PRICE_ID = process.env.STRIPE_PRICE_ID;
+const isStripeConfigured = Boolean(STRIPE_SECRET_KEY && STRIPE_PRICE_ID);
 
 if (!STRIPE_SECRET_KEY) {
-  console.error("❌ Missing STRIPE_SECRET_KEY in .env");
-  process.exit(1);
+  console.warn("⚠️ Missing STRIPE_SECRET_KEY in .env");
 }
 if (!STRIPE_PRICE_ID) {
-  console.error("❌ Missing STRIPE_PRICE_ID in .env");
-  process.exit(1);
+  console.warn("⚠️ Missing STRIPE_PRICE_ID in .env");
 }
 
-const stripe = new Stripe(STRIPE_SECRET_KEY);
+const stripe = isStripeConfigured ? new Stripe(STRIPE_SECRET_KEY) : null;
 
 /* --------------------
    In-memory store
@@ -121,6 +120,9 @@ app.get("/health", (req, res) => {
 // Create Stripe checkout
 app.post("/create-checkout-session", async (req, res) => {
   try {
+    if (!isStripeConfigured) {
+      return res.status(500).json({ error: "Stripe is not configured" });
+    }
     const answers = req.body?.answers;
 
     if (!Array.isArray(answers) || answers.length !== 15) {
@@ -150,6 +152,9 @@ app.post("/create-checkout-session", async (req, res) => {
 // Verify payment
 app.get("/verify-session", async (req, res) => {
   try {
+    if (!isStripeConfigured) {
+      return res.status(500).json({ paid: false, error: "Stripe is not configured" });
+    }
     const sessionId = req.query.session_id;
     if (!sessionId) {
       return res.status(400).json({ paid: false });
@@ -271,4 +276,3 @@ app.post("/generate-advice", (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });
-
