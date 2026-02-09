@@ -1,7 +1,7 @@
 {
-  "name": "fighters-path",
+  "name": "love-test",
   "version": "1.0.0",
-  "description": "Fighter style quiz + Stripe payments + weekly email roadmap (100 steps) using Node.js, Stripe, Nodemailer, Cron, LowDB.",
+  "description": "Love test quiz with Stripe one-time payment.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -13,9 +13,7 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "lowdb": "^1.0.0",
-    "node-cron": "^3.0.3",
-    "nodemailer": "^7.0.13",
     "stripe": "^16.12.0"
   }
 }
+
