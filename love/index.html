@@ -1,314 +1,819 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>How Do You Talk to the Person You Like?</title>
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%23ff5a7a'/%3E%3Cstop offset='1' stop-color='%23e11d48'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%23ffffff'/%3E%3Cpath fill='url(%23g)' d='M20 26c0-7 5.7-12.5 12.6-12.5 4.2 0 8.1 2 10.4 5.1 2.3-3.1 6.2-5.1 10.4-5.1C60.3 13.5 66 19 66 26c0 8.7-7.9 15.6-23 26.7-1.5 1.1-3.6 1.1-5.1 0C22.9 41.6 15 34.7 15 26z'/%3E%3Cpath fill='url(%23g)' d='M29 48l-9 6 3-10'/%3E%3Ccircle cx='29' cy='30' r='3.2' fill='%23ffffff'/%3E%3Ccircle cx='37' cy='30' r='3.2' fill='%23ffffff'/%3E%3Ccircle cx='45' cy='30' r='3.2' fill='%23ffffff'/%3E%3C/svg%3E"
-    />
-    <style>
-      :root { color-scheme: light; }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: "Inter", system-ui, -apple-system, sans-serif;
-        background: radial-gradient(circle at top, rgba(236, 72, 153, 0.25), rgba(15, 23, 42, 0.96));
-        color: #f8fafc;
-        min-height: 100vh;
-      }
-      .container { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
-      .card { background: rgba(15, 23, 42, 0.85); border-radius: 24px; padding: 32px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.45); }
-      .badge { text-transform: uppercase; letter-spacing: 0.3em; font-size: 12px; color: #f9a8d4; }
-      h1, h2, h3 { margin: 0 0 12px; }
-      p { color: #cbd5f5; line-height: 1.6; }
-      .primary { background: #ec4899; color: white; border: none; padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 16px; cursor: pointer; }
-      .primary:disabled { opacity: 0.6; cursor: not-allowed; }
-      .secondary { background: transparent; border: 1px solid #475569; color: #e2e8f0; padding: 12px 22px; border-radius: 999px; cursor: pointer; }
-      .option { width: 100%; text-align: left; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; color: #f8fafc; padding: 14px 18px; border-radius: 18px; margin-bottom: 12px; cursor: pointer; }
-      .option.selected { border-color: #f472b6; background: rgba(236, 72, 153, 0.2); }
-      .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
-      .space-between { justify-content: space-between; }
-      .hidden { display: none; }
-      .progress { height: 8px; width: 100%; background: #1f2937; border-radius: 999px; overflow: hidden; }
-      .progress span { display: block; height: 100%; background: #ec4899; width: 0; transition: width 0.3s ease; }
-      ul { padding-left: 18px; }
-      .error { color: #fca5a5; font-size: 14px; }
-      .muted { color: #94a3b8; font-size: 14px; }
-      .grid { display: grid; gap: 16px; }
-      @media (min-width: 720px) { .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div id="landing" class="card">
-        <div class="row" style="align-items:center;gap:12px;margin-bottom:12px;">
-          <img
-            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%23ff5a7a'/%3E%3Cstop offset='1' stop-color='%23e11d48'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='240' height='240' rx='48' fill='%23ffffff'/%3E%3Cpath fill='url(%23g)' d='M66 92c0-25 20-45 45-45 18 0 33 8 41 21 8-13 23-21 41-21 25 0 45 20 45 45 0 32-28 57-80 95-7 5-16 5-23 0-52-38-80-63-80-95z'/%3E%3Cpath fill='url(%23g)' d='M94 180l-22 14 7-24'/%3E%3Ccircle cx='104' cy='114' r='10' fill='%23ffffff'/%3E%3Ccircle cx='130' cy='114' r='10' fill='%23ffffff'/%3E%3Ccircle cx='156' cy='114' r='10' fill='%23ffffff'/%3E%3Ccircle cx='184' cy='72' r='24' fill='%23ff5a7a'/%3E%3C/svg%3E"
-            alt="How Do You Talk logo"
-            style="width:56px;height:56px;border-radius:14px;background:#fff;"
-          />
-          <div>
-            <p class="badge" style="margin-bottom:6px;">Dating & social skills test</p>
-            <h1 style="margin:0;">How Do You Talk to the Person You Like?</h1>
-          </div>
-        </div>
-        <p>
-          People are becoming less social in real life. This quick test helps you understand your communication style
-          in dating, so you can become more confident, clear, and consistent.
-        </p>
-        <button class="primary" id="startBtn">Start the test</button>
-      </div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Love Talk Test</title>
+  <style>
+    :root{
+      --bg:#0b0b12; --card:#121224; --muted:#a7a7c7; --text:#f2f2ff;
+      --accent:#ff4d8d; --accent2:#ff7ab2; --ok:#2dd4bf; --warn:#fbbf24;
+      --border:rgba(255,255,255,.10);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(255,77,141,.25), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(45,212,191,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      padding:24px;
+    }
+    .wrap{width:min(920px, 100%)}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; margin-bottom:18px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+    }
+    .logo{
+      width:42px; height:42px; border-radius:12px;
+      display:grid; place-items:center;
+      background: linear-gradient(135deg, rgba(255,77,141,.35), rgba(255,122,178,.15));
+      border:1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0,0,0,.3);
+      font-size:20px;
+    }
+    .brand h1{font-size:16px; margin:0; letter-spacing:.4px}
+    .brand p{margin:0; color:var(--muted); font-size:12px}
+    .pill{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      padding:8px 10px;
+      border-radius:999px;
+      color:var(--muted);
+      font-size:12px;
+    }
 
-      <div id="test" class="card hidden">
-        <p class="badge">Dating & social skills test</p>
-        <h1>How Do You Talk to the Person You Like?</h1>
-        <p class="muted">Answer 15 quick questions to reveal your communication style before you unlock results.</p>
-        <div class="progress"><span id="progressBar"></span></div>
-        <p class="badge" id="progressText">Question 1 / 15</p>
-        <h2 id="questionPrompt"></h2>
-        <div id="options"></div>
-        <p id="questionError" class="error hidden">Please select an answer to continue.</p>
-        <div class="row space-between">
-          <button class="secondary" id="backBtn">Back</button>
-          <button class="primary" id="nextBtn">Next</button>
+    .card{
+      background: rgba(18,18,36,.78);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:16px;
+    }
+    @media (max-width: 860px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .title{font-size:26px; margin:6px 0 8px}
+    .subtitle{color:var(--muted); margin:0 0 14px; line-height:1.5}
+
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap}
+    button{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding: 12px 14px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight:700;
+      letter-spacing:.2px;
+      transition: transform .06s ease, background .2s ease;
+    }
+    button:hover{background: rgba(255,255,255,.10)}
+    button:active{transform: translateY(1px)}
+    .primary{
+      border-color: rgba(255,77,141,.45);
+      background: linear-gradient(135deg, rgba(255,77,141,.35), rgba(255,122,178,.20));
+    }
+    .primary:hover{background: linear-gradient(135deg, rgba(255,77,141,.45), rgba(255,122,178,.28))}
+    .ghost{background: transparent}
+    .danger{border-color: rgba(251,191,36,.40);}
+
+    .divider{height:1px; background: var(--border); margin:14px 0}
+
+    .qhead{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      margin-bottom:12px;
+    }
+    .qhead .progress{color:var(--muted); font-size:13px}
+    .qhead .bar{
+      flex:1;
+      height:10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      overflow:hidden;
+    }
+    .qhead .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+
+    .question{font-size:20px; margin:6px 0 12px; line-height:1.35}
+    .options{display:grid; gap:10px}
+    .opt{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      padding: 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      display:flex; gap:10px; align-items:flex-start;
+      transition: background .2s ease, border-color .2s ease;
+    }
+    .opt:hover{background: rgba(255,255,255,.08)}
+    .opt.selected{
+      border-color: rgba(255,77,141,.55);
+      background: rgba(255,77,141,.12);
+    }
+    .opt .tag{
+      width:26px; height:26px; border-radius:10px;
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      font-weight:800;
+      color:rgba(255,255,255,.9);
+      flex:0 0 auto;
+    }
+    .opt .txt{line-height:1.35}
+    .opt .txt .small{display:block; color:var(--muted); font-size:12px; margin-top:4px}
+
+    .scale{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .chip{
+      min-width:44px;
+      text-align:center;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      cursor:pointer;
+      font-weight:800;
+    }
+    .chip.selected{
+      border-color: rgba(255,77,141,.55);
+      background: rgba(255,77,141,.12);
+    }
+
+    .side h3{margin:6px 0 8px; font-size:14px; color:rgba(255,255,255,.9)}
+    .side p{margin:0; color:var(--muted); line-height:1.55; font-size:13px}
+    .hint{
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.18);
+      color:var(--muted);
+      background: rgba(255,255,255,.03);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .resultBox{
+      padding:14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+    }
+    .bigType{font-size:22px; margin:4px 0 6px}
+    .desc{margin:0; color:var(--muted); line-height:1.5}
+    .traits{display:grid; gap:10px; margin-top:12px}
+    .trait{
+      display:grid; grid-template-columns: 1fr auto; gap:10px;
+      align-items:center;
+    }
+    .trait .name{color:rgba(255,255,255,.9); font-weight:700; font-size:13px}
+    .trait .val{color:var(--muted); font-weight:800; font-size:13px}
+    .meter{
+      grid-column:1 / -1;
+      height:10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      overflow:hidden;
+    }
+    .meter > div{height:100%; width:0%; background: linear-gradient(90deg, var(--ok), var(--accent));}
+
+    .lock{
+      display:flex; align-items:center; gap:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(251,191,36,.35);
+      background: rgba(251,191,36,.10);
+      color: rgba(255,255,255,.92);
+      margin-top:12px;
+      font-size:13px;
+    }
+
+    pre{
+      white-space:pre-wrap;
+      background: rgba(0,0,0,.25);
+      border: 1px solid var(--border);
+      padding:12px;
+      border-radius:14px;
+      color: rgba(255,255,255,.92);
+      line-height:1.5;
+      font-size:13px;
+    }
+
+    .hidden{display:none !important;}
+    .row{
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .smallmuted{color:var(--muted); font-size:12px}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">💖</div>
+        <div>
+          <h1>Love Talk Test</h1>
+          <p>How you message when you like someone</p>
         </div>
       </div>
-
-      <div id="paywall" class="card hidden">
-        <p class="badge">Almost done</p>
-        <h2>Your results are ready to unlock.</h2>
-        <p>We prepared your communication archetype, trait scores, and advice. Unlock the full breakdown below.</p>
-        <p id="payError" class="error hidden"></p>
-        <div class="row">
-          <button class="primary" id="payBtn">See the results</button>
-          <button class="secondary" id="reviewBtn">Back to review</button>
-        </div>
-      </div>
-
-      <div id="results" class="card hidden">
-        <p class="badge">Your results</p>
-        <h2 id="archetypeName"></h2>
-        <p id="archetypeDescription"></p>
-        <div class="grid grid-2">
-          <div>
-            <h3>Trait scores</h3>
-            <ul id="traitList"></ul>
-          </div>
-          <div>
-            <h3>What this means</h3>
-            <p class="muted">Your archetype reflects how you show up in dating conversations and where you can grow.</p>
-          </div>
-        </div>
-        <button class="primary" id="continueBtn">Continue</button>
-      </div>
-
-      <div id="advice" class="card hidden">
-        <p class="badge">Personalized advice</p>
-        <h2>Practical ways to level up</h2>
-        <p id="adviceText">Loading advice...</p>
-      </div>
+      <div class="pill" id="statusPill">Not paid</div>
     </div>
 
-    <script>
-      const questions = [
-        { id: "q1", prompt: "When you want to start a conversation, you usually…", type: "choice", options: ["Go for it", "Overthink it", "Wait for a story", "Send something playful"] },
-        { id: "q2", prompt: "If someone leaves you on seen, you…", type: "choice", options: ["Follow up once", "Assume they lost interest", "Make a joke", "Match their energy"] },
-        { id: "q3", prompt: "How comfortable are you flirting directly?", type: "scale" },
-        { id: "q4", prompt: "Your confidence in person is…", type: "scale" },
-        { id: "q5", prompt: "You worry about saying the wrong thing…", type: "scale" },
-        { id: "q6", prompt: "Your humor in dating is best described as…", type: "choice", options: ["Playful", "Thoughtful", "Dry", "I hold back"] },
-        { id: "q7", prompt: "Emotional openness early on feels…", type: "scale" },
-        { id: "q8", prompt: "Consistency in texting is…", type: "choice", options: ["Easy for me", "Hard when I'm anxious", "I reply in bursts", "I prefer real life"] },
-        { id: "q9", prompt: "Setting boundaries feels…", type: "scale" },
-        { id: "q10", prompt: "Texting vs real life: you feel…", type: "choice", options: ["Texting is easier", "Real life is easier", "Both are fine", "Depends on the person"] },
-        { id: "q11", prompt: "How playful are you when flirting?", type: "scale" },
-        { id: "q12", prompt: "When someone is slow to reply, you think…", type: "choice", options: ["They're busy", "I messed up", "I'll keep it light", "I'll match their pace"] },
-        { id: "q13", prompt: "Complimenting someone you like feels…", type: "scale" },
-        { id: "q14", prompt: "How likely are you to follow up after a great date?", type: "scale" },
-        { id: "q15", prompt: "Your biggest goal in dating conversations is…", type: "choice", options: ["Clarity", "Comfort", "Fun", "Stability"] }
-      ];
+    <div class="grid">
+      <div class="card" id="mainCard">
+        <!-- LANDING -->
+        <section id="screenLanding">
+          <h2 class="title">How do you talk to the person you like?</h2>
+          <p class="subtitle">
+            This test shows your dating communication style and gives real advice to become more confident and sociable.
+          </p>
+          <div class="btnrow">
+            <button class="primary" id="btnStart">Start the test</button>
+            <button class="ghost" id="btnDemoFill">Demo: auto-fill answers</button>
+          </div>
+          <div class="divider"></div>
+          <p class="smallmuted">Takes ~2 minutes. Your results unlock after payment.</p>
+        </section>
 
-      const state = { currentIndex: 0, answers: {} };
+        <!-- QUIZ -->
+        <section id="screenQuiz" class="hidden">
+          <div class="qhead">
+            <div class="progress" id="progressText">Question 1/15</div>
+            <div class="bar" aria-hidden="true"><div id="progressBar"></div></div>
+          </div>
 
-      const landing = document.getElementById("landing");
-      const test = document.getElementById("test");
-      const paywall = document.getElementById("paywall");
-      const results = document.getElementById("results");
-      const advice = document.getElementById("advice");
+          <div class="question" id="qText"></div>
 
-      const progressBar = document.getElementById("progressBar");
-      const progressText = document.getElementById("progressText");
-      const questionPrompt = document.getElementById("questionPrompt");
-      const optionsContainer = document.getElementById("options");
-      const questionError = document.getElementById("questionError");
+          <div id="qOptions" class="options hidden"></div>
+          <div id="qScale" class="scale hidden"></div>
 
-      const payError = document.getElementById("payError");
-      const archetypeName = document.getElementById("archetypeName");
-      const archetypeDescription = document.getElementById("archetypeDescription");
-      const traitList = document.getElementById("traitList");
-      const adviceText = document.getElementById("adviceText");
+          <div class="divider"></div>
+          <div class="btnrow">
+            <button id="btnBack">Back</button>
+            <button class="primary" id="btnNext">Next</button>
+          </div>
+        </section>
 
-      document.getElementById("startBtn").addEventListener("click", () => {
-        landing.classList.add("hidden");
-        test.classList.remove("hidden");
-        renderQuestion();
-      });
+        <!-- ALMOST DONE -->
+        <section id="screenPay" class="hidden">
+          <h2 class="title">Almost done ✅</h2>
+          <p class="subtitle">
+            Your result is ready, but it’s locked until payment.
+          </p>
 
-      document.getElementById("backBtn").addEventListener("click", () => {
-        if (state.currentIndex === 0) {
-          test.classList.add("hidden");
-          landing.classList.remove("hidden");
-          return;
-        }
-        state.currentIndex -= 1;
-        renderQuestion();
-      });
+          <div class="resultBox" id="previewBox">
+            <div class="row">
+              <div>
+                <div class="smallmuted">Preview</div>
+                <div class="bigType" id="previewType">—</div>
+              </div>
+              <div class="smallmuted">Locked</div>
+            </div>
+            <p class="desc" id="previewDesc">—</p>
 
-      document.getElementById("nextBtn").addEventListener("click", () => {
-        const currentQuestion = questions[state.currentIndex];
-        if (state.answers[currentQuestion.id] === undefined) {
-          questionError.classList.remove("hidden");
-          return;
-        }
-        questionError.classList.add("hidden");
+            <div class="lock">🔒 Pay to unlock your full result + personalized advice.</div>
+          </div>
 
-        if (state.currentIndex === questions.length - 1) {
-          test.classList.add("hidden");
-          paywall.classList.remove("hidden");
-          return;
-        }
+          <div class="divider"></div>
+          <div class="btnrow">
+            <button class="primary" id="btnPay">See the results</button>
+            <button class="ghost" id="btnRestart">Restart</button>
+          </div>
+          <p class="smallmuted" id="payNote"></p>
+        </section>
 
-        state.currentIndex += 1;
-        renderQuestion();
-      });
+        <!-- RESULTS -->
+        <section id="screenResults" class="hidden">
+          <h2 class="title">Your result</h2>
+          <p class="subtitle">Unlocked ✅</p>
 
-      document.getElementById("reviewBtn").addEventListener("click", () => {
-        paywall.classList.add("hidden");
-        test.classList.remove("hidden");
-        renderQuestion();
-      });
+          <div class="resultBox">
+            <div class="bigType" id="resultType">—</div>
+            <p class="desc" id="resultDesc">—</p>
 
-      document.getElementById("payBtn").addEventListener("click", async () => {
-        payError.classList.add("hidden");
-        try {
-          const response = await fetch("/create-checkout-session", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ answers: state.answers })
-          });
-          if (!response.ok) throw new Error(await response.text());
-          const data = await response.json();
-          window.location.href = data.url;
-        } catch {
-          payError.textContent = "Unable to start checkout. Please try again.";
-          payError.classList.remove("hidden");
-        }
-      });
+            <div class="traits" id="traitsBox"></div>
+          </div>
 
-      document.getElementById("continueBtn").addEventListener("click", async () => {
-        results.classList.add("hidden");
-        advice.classList.remove("hidden");
-        await loadAdvice();
-      });
+          <div class="divider"></div>
+          <div class="btnrow">
+            <button class="primary" id="btnContinue">Continue</button>
+            <button class="ghost" id="btnRetake">Retake</button>
+          </div>
+        </section>
 
-      function renderQuestion() {
-        const currentQuestion = questions[state.currentIndex];
-        const answered = Object.keys(state.answers).length;
-        const progress = Math.round((answered / questions.length) * 100);
-        progressBar.style.width = `${progress}%`;
-        progressText.textContent = `Question ${state.currentIndex + 1} / ${questions.length}`;
-        questionPrompt.textContent = currentQuestion.prompt;
-        optionsContainer.innerHTML = "";
+        <!-- ADVICE -->
+        <section id="screenAdvice" class="hidden">
+          <h2 class="title">Personal advice</h2>
+          <p class="subtitle">Practical + not cringe.</p>
 
-        const options =
-          currentQuestion.type === "scale" ? ["1", "2", "3", "4", "5"] : currentQuestion.options;
+          <pre id="adviceText">Loading...</pre>
 
-        options.forEach((option, index) => {
-          const button = document.createElement("button");
-          button.className = "option";
-          button.textContent = option;
-          if (state.answers[currentQuestion.id] === index) button.classList.add("selected");
-          button.addEventListener("click", () => {
-            state.answers[currentQuestion.id] = index;
+          <div class="divider"></div>
+          <div class="btnrow">
+            <button class="primary" id="btnBackToResults">Back to results</button>
+            <button class="ghost" id="btnRetake2">Retake</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="card side">
+        <h3>How it works</h3>
+        <p>
+          Answer 15 quick questions about texting + dating vibes. After payment, you’ll unlock your archetype,
+          trait scores, and personalized advice with message scripts.
+        </p>
+        <div class="hint">
+          Tip: Don’t aim for “perfect texting”. Aim for <b>clear</b>, <b>consistent</b>, and <b>warm</b>.
+        </div>
+        <div class="hint" id="returnHint" style="display:none;">
+          You returned from Stripe. If payment succeeded, your result will unlock automatically.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------------------------
+    // Quiz data (15 questions)
+    // ---------------------------
+    const QUESTIONS = [
+      { id: 1, type: "scale", text: "How confident are you starting a conversation with someone you like?", minLabel:"Not confident", maxLabel:"Very confident" },
+      { id: 2, type: "choice", text: "What’s your usual first message?", options: [
+        { key:"a", label:"“Hey” / “Hi”", sub:"Simple and safe." },
+        { key:"b", label:"A witty opener about their profile/story", sub:"Playful + engaging." },
+        { key:"c", label:"A long paragraph explaining everything", sub:"Deep… but can feel intense." },
+        { key:"d", label:"I don’t message first", sub:"I wait and hope they do." }
+      ]},
+      { id: 3, type: "scale", text: "How balanced is your reply speed? (1 = too fast, 5 = too slow)", minLabel:"Too fast", maxLabel:"Too slow" },
+      { id: 4, type: "choice", text: "They saw your message but didn’t reply. You…", options: [
+        { key:"a", label:"Stay calm and wait", sub:"No chasing." },
+        { key:"b", label:"Send one polite follow-up later", sub:"Clear and respectful." },
+        { key:"c", label:"Send 2–3 messages until they respond", sub:"Anxiety spike." },
+        { key:"d", label:"Ghost them back", sub:"Ego protection." }
+      ]},
+      { id: 5, type: "scale", text: "How comfortable are you flirting?", minLabel:"Not at all", maxLabel:"Very" },
+      { id: 6, type: "choice", text: "Your compliment style is:", options: [
+        { key:"a", label:"Generic: “You’re cute”", sub:"Okay, but forgettable." },
+        { key:"b", label:"Specific: “Your smile + vibe is addictive”", sub:"Best option." },
+        { key:"c", label:"Too intense: “I think you’re my soulmate”", sub:"Can scare people." },
+        { key:"d", label:"I avoid compliments", sub:"I don’t want to seem needy." }
+      ]},
+      { id: 7, type: "scale", text: "After sending a message, how much do you overthink it?", minLabel:"Never", maxLabel:"A lot" },
+      { id: 8, type: "choice", text: "When it’s time to meet, you…", options: [
+        { key:"a", label:"Suggest a specific plan (day + place)", sub:"Confident + clear." },
+        { key:"b", label:"Hint: “We should hang sometime”", sub:"Vague." },
+        { key:"c", label:"Wait for them to suggest", sub:"Low initiative." },
+        { key:"d", label:"Avoid meeting and keep texting", sub:"Safety zone." }
+      ]},
+      { id: 9, type: "scale", text: "How emotionally open are you when you like someone?", minLabel:"Closed", maxLabel:"Open" },
+      { id: 10, type: "choice", text: "How often do you use humor in flirting?", options: [
+        { key:"a", label:"Often", sub:"Good spark." },
+        { key:"b", label:"Sometimes", sub:"Balanced." },
+        { key:"c", label:"Rarely", sub:"More serious." },
+        { key:"d", label:"Never", sub:"Straight to the point." }
+      ]},
+      { id: 11, type: "scale", text: "How consistent are you (not disappearing for days)?", minLabel:"Not consistent", maxLabel:"Very consistent" },
+      { id: 12, type: "choice", text: "Your boundaries in dating are:", options: [
+        { key:"a", label:"Clear and respectful", sub:"Healthy." },
+        { key:"b", label:"Flexible but fair", sub:"Usually fine." },
+        { key:"c", label:"I people-please", sub:"Risky." },
+        { key:"d", label:"I build walls", sub:"Avoiding closeness." }
+      ]},
+      { id: 13, type: "scale", text: "Texting vs real life: how comfortable are you in person?", minLabel:"Text > IRL", maxLabel:"IRL is easy" },
+      { id: 14, type: "choice", text: "If they flirt first, you…", options: [
+        { key:"a", label:"Match their energy", sub:"Best." },
+        { key:"b", label:"Get shy and go quiet", sub:"Nervous." },
+        { key:"c", label:"Ignore it", sub:"Missed opportunity." },
+        { key:"d", label:"Go too intense", sub:"Can overwhelm." }
+      ]},
+      { id: 15, type: "scale", text: "How clear are you about what you want with them?", minLabel:"Not clear", maxLabel:"Very clear" }
+    ];
+
+    // Client-side scoring (preview only; server will recompute for truth)
+    function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
+    function scaleToDelta(v){ const num=Number(v); if(!Number.isFinite(num)) return 0; return (num-3)*10; }
+
+    function scoreClient(answers){
+      const traits = { confidence:50, clarity:50, playfulness:50, availability:50, consistency:50, anxiety:50 };
+      const A = answers;
+
+      const add=(t,d)=> traits[t]=clamp(traits[t]+d,0,100);
+
+      add("confidence", scaleToDelta(A[0]?.value));
+      add("anxiety", -scaleToDelta(A[0]?.value));
+
+      switch (A[1]?.value){
+        case "b": add("playfulness",+12); add("clarity",+8); add("confidence",+8); break;
+        case "c": add("availability",+8); add("anxiety",+10); add("clarity",-8); break;
+        case "d": add("anxiety",+14); add("confidence",-12); add("consistency",-6); break;
+        default: add("clarity",+2); break;
+      }
+
+      { const v=Number(A[2]?.value);
+        if(v===3){ add("consistency",+10); add("anxiety",-6); }
+        else if(v<=2){ add("anxiety",+8); add("availability",+6); add("clarity",-2); }
+        else if(v>=4){ add("consistency",-6); add("clarity",-2); }
+      }
+
+      switch (A[3]?.value){
+        case "a": add("confidence",+10); add("anxiety",-10); add("consistency",+4); break;
+        case "b": add("clarity",+8); add("consistency",+6); add("anxiety",+2); break;
+        case "c": add("anxiety",+14); add("clarity",-6); add("confidence",-6); break;
+        case "d": add("consistency",-12); add("availability",-8); add("anxiety",+4); break;
+      }
+
+      add("playfulness", scaleToDelta(A[4]?.value));
+      add("confidence", scaleToDelta(A[4]?.value)*0.6);
+
+      switch (A[5]?.value){
+        case "b": add("clarity",+10); add("availability",+6); break;
+        case "c": add("availability",+10); add("anxiety",+6); add("clarity",-6); break;
+        case "d": add("clarity",-6); add("confidence",-4); break;
+        default: add("clarity",+2); break;
+      }
+
+      add("anxiety", scaleToDelta(A[6]?.value));
+      add("confidence", -scaleToDelta(A[6]?.value)*0.5);
+
+      switch (A[7]?.value){
+        case "a": add("clarity",+12); add("confidence",+10); add("consistency",+6); break;
+        case "b": add("playfulness",+6); add("clarity",-2); break;
+        case "c": add("consistency",-6); add("anxiety",+6); break;
+        case "d": add("availability",-12); add("anxiety",+10); add("confidence",-6); break;
+      }
+
+      add("availability", scaleToDelta(A[8]?.value));
+      add("clarity", scaleToDelta(A[8]?.value)*0.4);
+
+      switch (A[9]?.value){
+        case "a": add("playfulness",+12); add("confidence",+4); break;
+        case "b": add("playfulness",+6); break;
+        case "c": add("playfulness",-4); break;
+        case "d": add("playfulness",-10); break;
+      }
+
+      add("consistency", scaleToDelta(A[10]?.value));
+      add("anxiety", -scaleToDelta(A[10]?.value)*0.3);
+
+      switch (A[11]?.value){
+        case "a": add("clarity",+10); add("confidence",+6); add("availability",+2); break;
+        case "b": add("availability",+4); break;
+        case "c": add("anxiety",+10); add("clarity",-6); break;
+        case "d": add("availability",-10); add("confidence",+2); add("clarity",-2); break;
+      }
+
+      add("confidence", scaleToDelta(A[12]?.value));
+      add("anxiety", -scaleToDelta(A[12]?.value));
+
+      switch (A[13]?.value){
+        case "a": add("confidence",+8); add("playfulness",+8); add("clarity",+4); break;
+        case "b": add("anxiety",+6); add("availability",+2); break;
+        case "c": add("availability",-8); add("consistency",-4); break;
+        case "d": add("anxiety",+10); add("clarity",-6); add("confidence",-2); break;
+      }
+
+      add("clarity", scaleToDelta(A[14]?.value));
+      add("confidence", scaleToDelta(A[14]?.value)*0.4);
+
+      const t=traits;
+      let archetype="Friendly but Vague";
+      let description="You’re warm and likable, but your messages can be unclear. A little more directness will make your dating life easier.";
+
+      if(t.anxiety>=70 && t.clarity<=45){
+        archetype="Overthinker Texter";
+        description="You care a lot, but you spiral after sending messages. The goal: calmer texting + clearer intent.";
+      } else if(t.confidence>=70 && t.playfulness>=65 && t.anxiety<=45){
+        archetype="Confident Flirter";
+        description="You’re bold, fun, and comfortable making moves. Keep it respectful and consistent.";
+      } else if(t.consistency<=40 && t.availability<=45){
+        archetype="Avoidant Checker";
+        description="You pop in and out and keep distance. Building trust means showing up more consistently.";
+      } else if(t.playfulness<=40 && t.clarity<=50){
+        archetype="Dry Responder";
+        description="Your replies can feel short or flat. Add warmth, questions, and small sparks of personality.";
+      } else if(t.availability>=65 && t.clarity>=60 && t.playfulness>=50){
+        archetype="Warm Storyteller";
+        description="You connect through warmth and good conversation. Keep your messages focused and action-oriented.";
+      }
+
+      return { traits, archetype, description };
+    }
+
+    // ---------------------------
+    // App state
+    // ---------------------------
+    const answers = Array(15).fill(null); // each item: {type, value}
+    let idx = 0;
+    let paid = false;
+    let unlocked = null; // {archetype, traits, description}
+
+    // Elements
+    const statusPill = document.getElementById("statusPill");
+    const returnHint = document.getElementById("returnHint");
+
+    const screens = {
+      landing: document.getElementById("screenLanding"),
+      quiz: document.getElementById("screenQuiz"),
+      pay: document.getElementById("screenPay"),
+      results: document.getElementById("screenResults"),
+      advice: document.getElementById("screenAdvice")
+    };
+
+    const btnStart = document.getElementById("btnStart");
+    const btnDemoFill = document.getElementById("btnDemoFill");
+    const btnBack = document.getElementById("btnBack");
+    const btnNext = document.getElementById("btnNext");
+    const btnPay = document.getElementById("btnPay");
+    const btnRestart = document.getElementById("btnRestart");
+    const btnRetake = document.getElementById("btnRetake");
+    const btnRetake2 = document.getElementById("btnRetake2");
+    const btnContinue = document.getElementById("btnContinue");
+    const btnBackToResults = document.getElementById("btnBackToResults");
+
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+    const qText = document.getElementById("qText");
+    const qOptions = document.getElementById("qOptions");
+    const qScale = document.getElementById("qScale");
+
+    const previewType = document.getElementById("previewType");
+    const previewDesc = document.getElementById("previewDesc");
+    const payNote = document.getElementById("payNote");
+
+    const resultType = document.getElementById("resultType");
+    const resultDesc = document.getElementById("resultDesc");
+    const traitsBox = document.getElementById("traitsBox");
+    const adviceText = document.getElementById("adviceText");
+
+    function show(name){
+      Object.values(screens).forEach(s => s.classList.add("hidden"));
+      screens[name].classList.remove("hidden");
+    }
+
+    function setPaid(isPaid){
+      paid = isPaid;
+      statusPill.textContent = isPaid ? "Paid ✅" : "Not paid";
+      statusPill.style.borderColor = isPaid ? "rgba(45,212,191,.35)" : "rgba(255,255,255,.10)";
+    }
+
+    function renderQuestion(){
+      const q = QUESTIONS[idx];
+      progressText.textContent = `Question ${idx+1}/15`;
+      progressBar.style.width = `${((idx+1)/15)*100}%`;
+      qText.textContent = q.text;
+
+      qOptions.classList.add("hidden");
+      qScale.classList.add("hidden");
+      qOptions.innerHTML = "";
+      qScale.innerHTML = "";
+
+      const current = answers[idx];
+
+      if(q.type === "choice"){
+        qOptions.classList.remove("hidden");
+        q.options.forEach((o, i) => {
+          const div = document.createElement("div");
+          div.className = "opt" + (current?.value === o.key ? " selected" : "");
+          div.innerHTML = `
+            <div class="tag">${String.fromCharCode(65+i)}</div>
+            <div class="txt">
+              <div><b>${o.label}</b></div>
+              <span class="small">${o.sub || ""}</span>
+            </div>
+          `;
+          div.onclick = () => {
+            answers[idx] = { type:"choice", value:o.key };
             renderQuestion();
-          });
-          optionsContainer.appendChild(button);
+          };
+          qOptions.appendChild(div);
         });
-      }
-
-      async function checkSessionFromUrl() {
-        const params = new URLSearchParams(window.location.search);
-        const sessionId = params.get("session_id");
-        const canceled = params.get("canceled");
-        if (!sessionId) {
-          landing.classList.remove("hidden");
-          test.classList.add("hidden");
-          renderQuestion();
-          if (canceled) alert("Checkout was canceled. You can continue the test or try again.");
-          return;
-        }
-
-        try {
-          const response = await fetch(`/verify-session?session_id=${sessionId}`);
-          if (!response.ok) throw new Error(await response.text());
-          const data = await response.json();
-          if (!data.paid) throw new Error("Payment not completed.");
-          showResults(data.archetype, data.description, data.traits);
-        } catch {
-          landing.classList.remove("hidden");
-          paywall.classList.add("hidden");
-          test.classList.add("hidden");
-          results.classList.add("hidden");
-          advice.classList.add("hidden");
-          alert("Payment not completed yet. Please finish checkout.");
+      } else {
+        qScale.classList.remove("hidden");
+        // 1..5 chips
+        for(let v=1; v<=5; v++){
+          const chip = document.createElement("div");
+          chip.className = "chip" + (Number(current?.value) === v ? " selected" : "");
+          chip.textContent = v;
+          chip.onclick = () => {
+            answers[idx] = { type:"scale", value:v };
+            renderQuestion();
+          };
+          qScale.appendChild(chip);
         }
       }
 
-      function showResults(archetype, description, traits) {
-        landing.classList.add("hidden");
-        test.classList.add("hidden");
-        paywall.classList.add("hidden");
-        results.classList.remove("hidden");
+      btnBack.disabled = idx === 0;
+      btnNext.textContent = idx === 14 ? "Finish" : "Next";
+    }
 
-        archetypeName.textContent = archetype.name;
-        archetypeDescription.textContent = description || "";
-        traitList.innerHTML = "";
+    function allAnswered(){
+      return answers.every(a => a && (a.value !== null && a.value !== undefined));
+    }
 
-        Object.entries(traits).forEach(([key, value]) => {
-          const li = document.createElement("li");
-          li.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`;
-          traitList.appendChild(li);
+    function goPayScreen(){
+      const preview = scoreClient(answers);
+      previewType.textContent = preview.archetype;
+      previewDesc.textContent = preview.description;
+      payNote.textContent = allAnswered() ? "" : "Please answer all questions first.";
+      show("pay");
+    }
+
+    function renderTraits(traits){
+      const pretty = [
+        ["Confidence", "confidence"],
+        ["Clarity", "clarity"],
+        ["Playfulness", "playfulness"],
+        ["Emotional availability", "availability"],
+        ["Consistency", "consistency"],
+        ["Anxiety", "anxiety"]
+      ];
+      traitsBox.innerHTML = "";
+      pretty.forEach(([label, key]) => {
+        const val = Math.round(traits[key] ?? 0);
+        const row = document.createElement("div");
+        row.className = "trait";
+        row.innerHTML = `
+          <div class="name">${label}</div>
+          <div class="val">${val}</div>
+          <div class="meter"><div style="width:${val}%"></div></div>
+        `;
+        traitsBox.appendChild(row);
+      });
+    }
+
+    function renderResults(data){
+      unlocked = data;
+      resultType.textContent = data.archetype || "—";
+      resultDesc.textContent = data.description || "";
+      renderTraits(data.traits || {});
+      show("results");
+    }
+
+    // ---------------------------
+    // Stripe flow
+    // ---------------------------
+    async function createCheckout(){
+      if(!allAnswered()){
+        payNote.textContent = "Answer all questions before payment.";
+        return;
+      }
+      btnPay.disabled = true;
+      btnPay.textContent = "Redirecting…";
+      payNote.textContent = "";
+
+      try{
+        const res = await fetch("/create-checkout-session", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ answers })
         });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data?.error || "Failed to create checkout session");
+        if(!data.url) throw new Error("Missing checkout URL");
+        window.location.href = data.url;
+      }catch(e){
+        payNote.textContent = "Error: " + e.message;
+        btnPay.disabled = false;
+        btnPay.textContent = "See the results";
+      }
+    }
+
+    async function verifyFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get("session_id");
+      const canceled = params.get("canceled");
+
+      if(canceled){
+        returnHint.style.display = "block";
+        returnHint.textContent = "Payment canceled. You can try again.";
+        setPaid(false);
+        // keep them on pay screen if finished
+        if(allAnswered()) goPayScreen();
+        return;
       }
 
-      async function loadAdvice() {
-        adviceText.textContent = "Loading advice...";
-        try {
-          const response = await fetch("/generate-advice", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              archetype: { name: archetypeName.textContent, description: archetypeDescription.textContent },
-              traits: Object.fromEntries(
-                Array.from(traitList.children).map((item) => {
-                  const [name, score] = item.textContent.split(": ");
-                  return [name.toLowerCase(), Number(score)];
-                })
-              )
-            })
-          });
-          if (!response.ok) throw new Error(await response.text());
-          const data = await response.json();
-          adviceText.textContent = data.advice;
-        } catch {
-          adviceText.textContent = "Unable to load advice right now. Please try again.";
+      if(!sessionId) return;
+
+      returnHint.style.display = "block";
+      setPaid(false);
+
+      try{
+        const res = await fetch(`/verify-session?session_id=${encodeURIComponent(sessionId)}`);
+        const data = await res.json();
+        if(data.paid){
+          setPaid(true);
+          renderResults(data);
+          // clean URL
+          const clean = window.location.origin + window.location.pathname;
+          window.history.replaceState({}, "", clean);
+        } else {
+          setPaid(false);
+          goPayScreen();
         }
+      }catch(e){
+        setPaid(false);
+        goPayScreen();
       }
+    }
 
-      checkSessionFromUrl();
-    </script>
-  </body>
+    // ---------------------------
+    // Advice
+    // ---------------------------
+    async function loadAdvice(){
+      if(!paid || !unlocked){
+        adviceText.textContent = "Locked. Please unlock results first.";
+        return;
+      }
+      adviceText.textContent = "Loading...";
+      show("advice");
+
+      try{
+        const res = await fetch("/generate-advice", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ archetype: unlocked.archetype, traits: unlocked.traits })
+        });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data?.error || "Failed to generate advice");
+        adviceText.textContent = data.adviceText || "No advice returned.";
+      }catch(e){
+        adviceText.textContent = "Error: " + e.message;
+      }
+    }
+
+    // ---------------------------
+    // Events
+    // ---------------------------
+    btnStart.onclick = () => { idx = 0; show("quiz"); renderQuestion(); };
+    btnDemoFill.onclick = () => {
+      // quick random but reasonable demo
+      const demo = [
+        {type:"scale",value:4},{type:"choice",value:"b"},{type:"scale",value:3},{type:"choice",value:"b"},
+        {type:"scale",value:4},{type:"choice",value:"b"},{type:"scale",value:2},{type:"choice",value:"a"},
+        {type:"scale",value:4},{type:"choice",value:"b"},{type:"scale",value:4},{type:"choice",value:"a"},
+        {type:"scale",value:4},{type:"choice",value:"a"},{type:"scale",value:4}
+      ];
+      for(let i=0;i<15;i++) answers[i]=demo[i];
+      idx = 0;
+      show("quiz");
+      renderQuestion();
+    };
+
+    btnBack.onclick = () => { if(idx>0){ idx--; renderQuestion(); } };
+    btnNext.onclick = () => {
+      // require answer
+      if(!answers[idx]){
+        alert("Pick an option first.");
+        return;
+      }
+      if(idx < 14){
+        idx++;
+        renderQuestion();
+      } else {
+        // finished
+        goPayScreen();
+      }
+    };
+
+    btnPay.onclick = createCheckout;
+
+    btnRestart.onclick = () => {
+      for(let i=0;i<15;i++) answers[i]=null;
+      idx=0; setPaid(false); unlocked=null;
+      show("landing");
+    };
+
+    btnRetake.onclick = btnRestart.onclick;
+    btnRetake2.onclick = btnRestart.onclick;
+
+    btnContinue.onclick = () => loadAdvice();
+    btnBackToResults.onclick = () => show("results");
+
+    // init
+    setPaid(false);
+    show("landing");
+    verifyFromUrl();
+  </script>
+</body>
 </html>
-
