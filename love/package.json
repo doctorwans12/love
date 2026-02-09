@@ -1,17 +1,20 @@
 {
   "name": "love-talk-test",
   "version": "1.0.0",
+  "description": "Minimal dating personality test with Stripe paywall",
   "private": true,
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
     "start": "node server.js"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
+    "express": "^4.19.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "openai": "^4.58.1",
     "stripe": "^16.12.0"
   }
 }
