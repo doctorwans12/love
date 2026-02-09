@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>What type of training suits me?</title>
+    <title>Test de iubire</title>
     <link rel="icon" href="favicon.png" type="image/png">
     <style>
         body { font-family: 'Arial', sans-serif; background: #f8f9fa; margin: 0; color: #333; padding-bottom: 150px; }
@@ -11,13 +11,13 @@
         .logo { max-width: 280px; display: block; margin: 0 auto 20px; }
         .section { display: none; }
         .active { display: block; }
+        .language-buttons { display: grid; gap: 12px; margin-top: 20px; }
         .btn { padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
         .btn-start { background: #000; color: white; width: 100%; margin-top: 20px; }
         .btn-opt { background: #f1f3f5; width: 100%; text-align: left; margin: 8px 0; border: 1px solid #ddd; padding: 15px; }
         .btn-opt:hover { background: #e2e6ea; }
 
         .manifesto-text { text-align: justify; line-height: 1.8; font-size: 16px; white-space: pre-line; }
-        .roadmap-highlight { background: #fff9db; padding: 20px; border-left: 5px solid #fcc419; margin: 25px 0; font-style: italic; }
 
         .float-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
@@ -45,10 +45,24 @@
 <body>
 
 <div class="container">
-    <div id="intro" class="section active">
+    <div id="language" class="section active">
         <img src="logo.png" alt="Logo" class="logo">
-        <p>This test is designed by professionals in the field of sports and will guide you toward a type of sport that suits you, based on the answers you provide. Take your time and answer honestly.</p>
-        <button class="btn btn-start" onclick="navigate('quiz')">Continue</button>
+        <h2 id="language-title" style="text-align:center; margin-top: 0;"></h2>
+        <p id="language-subtitle" style="text-align:center; margin-bottom: 0;"></p>
+        <div class="language-buttons">
+            <button class="btn btn-start" onclick="selectLanguage('ro')">Română</button>
+            <button class="btn btn-start" onclick="selectLanguage('en')">English</button>
+            <button class="btn btn-start" onclick="selectLanguage('fr')">Français</button>
+            <button class="btn btn-start" onclick="selectLanguage('es')">Español</button>
+            <button class="btn btn-start" onclick="selectLanguage('it')">Italiano</button>
+            <button class="btn btn-start" onclick="selectLanguage('de')">Deutsch</button>
+        </div>
+    </div>
+
+    <div id="intro" class="section">
+        <img src="logo.png" alt="Logo" class="logo">
+        <p id="intro-text"></p>
+        <button id="intro-cta" class="btn btn-start" onclick="navigate('quiz')"></button>
     </div>
 
     <div id="quiz" class="section">
@@ -57,156 +71,1254 @@
     </div>
 
     <div id="result-preview" class="section">
-        <h2 style="text-align:center;">Your Result Preview</h2>
+        <h2 id="preview-heading" style="text-align:center;"></h2>
         <div class="result-display-box preview-box">
             <div id="preview-content">
                 <h2 id="preview-title" style="margin-top:0;"></h2>
                 <ul id="preview-points" class="preview-list"></ul>
             </div>
-            <div id="preview-lock" class="locked-overlay">Locked Preview</div>
+            <div id="preview-lock" class="locked-overlay"></div>
         </div>
         <div class="preview-cta" id="preview-cta">
-            <button class="btn btn-start" onclick="pay(false)">Unlock full result — $1</button>
-            <button class="btn btn-opt" onclick="pay(true)">Unlock + Roadmap (subscription)</button>
-            <button class="btn btn-opt" onclick="showBasicOnly()">No thanks, show only basic result</button>
-            <div class="trust-text">One-time payment • Instant access • No automatic subscription</div>
+            <button id="preview-cta-primary" class="btn btn-start" onclick="pay(false)"></button>
+            <button id="preview-cta-basic" class="btn btn-opt" onclick="showBasicOnly()"></button>
+            <div id="preview-trust" class="trust-text"></div>
         </div>
     </div>
 
     <div id="manifesto" class="section">
-        <div class="manifesto-text">
-  To discover the fighting style that truly fits you, you must first understand your mindset, body type, and instinctive reactions under pressure.
-Some fighters thrive on explosive power and direct impact, while others dominate through patience, timing, and precision.
-Your ideal combat style reflects how you move, think, and adapt when challenged.
-
-Striking styles like boxing, kickboxing, or Muay Thai favor those with sharp reflexes, aggression, and a taste for controlled chaos.
-If you prefer strategy, leverage, and mental warfare, grappling arts such as Brazilian Jiu-Jitsu or wrestling may suit you perfectly.
-Speed, endurance, and discipline often lead fighters toward styles like taekwondo or karate, where technique is king.
-
-Hybrid fighters who hate limits usually gravitate toward MMA, blending multiple disciplines into a complete fighting system.
-Traditional martial arts appeal to those seeking balance, respect, and inner strength alongside physical skill.
-No style is superior—only the one that matches your natural instincts and long-term goals.
-
-A true fighter listens to their body, learns from defeat, and evolves constantly.
-Training the right style builds confidence, mental toughness, and unshakable self-control.
-
-
-Why you should continue with us: Most people never reach their potential because they train without direction or identity.
-By following our guidance, you’ll discover the fighting style that amplifies your strengths and hides your weaknesses.
-This isn’t just about learning how to fight—it’s about becoming dangerous in a controlled, intelligent way.
-Our experts break down combat psychology and martial arts science to guide you step by step.
-Your fighting style is your signature—define it, sharpen it, and own it.
-           
-            
-            Do you wish to see your professional result?
-        </div>
+        <div id="manifesto-text" class="manifesto-text"></div>
     </div>
 
     <div id="success-view" class="section">
-        <h1 style="color: #28a745;">Payment Successful! ✔️</h1>
+        <h1 id="success-title" style="color: #28a745;"></h1>
         <div class="result-display-box">
             <h2 id="final-type" style="margin-top:0;"></h2>
             <p id="final-desc" style="font-size: 18px;"></p>
             <hr>
-            <p id="email-notif" style="font-weight: bold; color: #28a745;"></p>
-            <p>Your Congrats!</p>
-            <p style="color: #d9480f;"><strong>good luck with training!</strong></p>
+            <p id="success-congrats"></p>
+            <p id="success-wish" style="color: #d9480f;"><strong></strong></p>
         </div>
-        <button class="btn btn-start" onclick="window.location.href='/'">Take the test again</button>
+        <button id="success-restart" class="btn btn-start" onclick="window.location.href='/'"></button>
     </div>
 </div>
 
 <div id="footerBar" class="float-bar">
-    <span class="float-title">Unlock your full result now</span>
-    <button class="btn btn-wish" onclick="pay(false)">Unlock full result — $1</button>
-    <button class="btn btn-no" onclick="showBasicOnly()">No thanks, show only basic result</button>
-    <div class="trust-text">One-time payment • Instant access • No automatic subscription</div>
+    <span id="footer-title" class="float-title"></span>
+    <button id="footer-cta-primary" class="btn btn-wish" onclick="pay(false)"></button>
+    <button id="footer-cta-basic" class="btn btn-no" onclick="showBasicOnly()"></button>
+    <div id="footer-trust" class="trust-text"></div>
 </div>
 
 <script>
-    const questions = [
-        {
-            q: "What feels most natural in a fight?",
-            a: ["Moving in and throwing combos", "Clinch, trips, and control", "Mixing ranges", "Keeping tight form and distance"]
+    let questions = [];
+    let resultsData = {};
+    let previewPoints = {};
+    let scoreKeys = [];
+    let currentLang = "ro";
+
+    const locales = {
+        ro: {
+            pageTitle: "Test de iubire",
+            languageTitle: "Alege limba",
+            languageSubtitle: "Selectează limba pentru a începe testul.",
+            introText: "Acest test îți arată stilul tău de comunicare în iubire și cât de sigur ești pe tine atunci când îți place cineva. Răspunde sincer pentru un rezultat corect.",
+            introCta: "Începe testul",
+            previewHeading: "Previzualizare rezultat",
+            previewLocked: "Rezultat blocat",
+            previewCtaPrimary: "Deblochează rezultatul complet — 1$",
+            previewCtaBasic: "Nu, vreau doar rezultatul de bază",
+            previewTrust: "Plată unică • Acces instant • Fără abonamente",
+            manifesto: `A agăța pe cineva nu înseamnă replici perfecte sau strategii complicate. Înseamnă, în primul rând, claritate și curaj. Fii sincer cu intențiile tale și nu încerca să pari altcineva. Oamenii simt autenticitatea mai repede decât crezi.
+
+Nu supraanaliza fiecare mesaj. Dacă ai ceva de spus, spune. Dacă nu, e ok să taci. Tăcerea controlată e mai atractivă decât mesajele trimise din anxietate. Învață să accepți că nu orice conversație va duce undeva – și asta e perfect normal.
+
+Flirtul nu înseamnă presiune, ci joacă. Umorul, căldura și interesul real bat orice replică „smart”. Fii atent la ce spune cealaltă persoană și construiește pe asta. Pune întrebări, dar împărtășește și tu lucruri despre tine.
+
+Cel mai important: nu fugi de respingere. Rejecția nu te definește, evitarea ei te limitează. Cu cât exersezi mai mult comunicarea sinceră, cu atât devii mai relaxat și mai atractiv.
+
+Agățatul nu e despre a impresiona. E despre a conecta.`,
+            successTitle: "Plata a fost realizată! ✔️",
+            successCongrats: "Felicitări! Ai descoperit stilul tău în iubire.",
+            successWish: "Folosește acest rezultat ca ghid, nu ca limită.",
+            successRestart: "Refă testul",
+            footerTitle: "Deblochează rezultatul complet",
+            footerCtaPrimary: "Deblochează rezultatul complet — 1$",
+            footerCtaBasic: "Nu, vreau doar rezultatul de bază",
+            footerTrust: "Plată unică • Acces instant • Fără abonamente",
+            questions: [
+                {
+                    q: "Când vezi pe cineva care îți place, primul tău impuls este:",
+                    a: [
+                        { t: "Mă duc și vorbesc direct", c: "A" },
+                        { t: "Mă gândesc mult ce să spun", c: "B" },
+                        { t: "Aștept un semn de la ea/el", c: "C" },
+                        { t: "Evit contactul, mi-e teamă", c: "D" }
+                    ]
+                },
+                {
+                    q: "Primul mesaj trimis de tine este de obicei:",
+                    a: [
+                        { t: "Amuzant / creativ", c: "A" },
+                        { t: "Simplu („hey”, „ce faci?”)", c: "B" },
+                        { t: "Lung și explicativ", c: "C" },
+                        { t: "Nu trimit eu primul mesaj", c: "D" }
+                    ]
+                },
+                {
+                    q: "Dacă nu primești răspuns rapid:",
+                    a: [
+                        { t: "Rămân calm", c: "A" },
+                        { t: "Devin puțin neliniștit", c: "B" },
+                        { t: "Trimit încă un mesaj", c: "C" },
+                        { t: "Mă enervez și renunț", c: "D" }
+                    ]
+                },
+                {
+                    q: "Stilul tău de conversație este:",
+                    a: [
+                        { t: "Jucăuș și flirtant", c: "A" },
+                        { t: "Prietenos", c: "B" },
+                        { t: "Serios și profund", c: "C" },
+                        { t: "Sec și la obiect", c: "D" }
+                    ]
+                },
+                {
+                    q: "Complimentele tale sunt:",
+                    a: [
+                        { t: "Îndrăznețe", c: "A" },
+                        { t: "Subtile", c: "B" },
+                        { t: "Foarte intense", c: "C" },
+                        { t: "Rare sau inexistente", c: "D" }
+                    ]
+                },
+                {
+                    q: "Când vine vorba de întâlniri:",
+                    a: [
+                        { t: "Propun clar zi și loc", c: "A" },
+                        { t: "Sugerez vag", c: "B" },
+                        { t: "Aștept ca cealaltă persoană să decidă", c: "C" },
+                        { t: "Evit întâlnirile față în față", c: "D" }
+                    ]
+                },
+                {
+                    q: "Cum reacționezi la flirtul ei/lui?",
+                    a: [
+                        { t: "Răspund cu același nivel", c: "A" },
+                        { t: "Mă emoționez", c: "B" },
+                        { t: "Nu sunt sigur dacă e flirt", c: "C" },
+                        { t: "Ignor", c: "D" }
+                    ]
+                },
+                {
+                    q: "Cât de mult analizezi mesajele trimise?",
+                    a: [
+                        { t: "Deloc", c: "A" },
+                        { t: "Puțin", c: "B" },
+                        { t: "Mult", c: "C" },
+                        { t: "Foarte mult", c: "D" }
+                    ]
+                },
+                {
+                    q: "În conversații:",
+                    a: [
+                        { t: "Pui multe întrebări", c: "A" },
+                        { t: "Vorbești echilibrat", c: "B" },
+                        { t: "Vorbești mai mult despre tine", c: "C" },
+                        { t: "Răspunzi scurt", c: "D" }
+                    ]
+                },
+                {
+                    q: "Dacă conversația moare:",
+                    a: [
+                        { t: "O reaprind", c: "A" },
+                        { t: "O las natural", c: "B" },
+                        { t: "Devin anxios", c: "C" },
+                        { t: "Renunț complet", c: "D" }
+                    ]
+                },
+                {
+                    q: "Cât de sigur ești pe tine?",
+                    a: [
+                        { t: "Foarte sigur", c: "A" },
+                        { t: "Destul de sigur", c: "B" },
+                        { t: "Nesigur", c: "C" },
+                        { t: "Foarte nesigur", c: "D" }
+                    ]
+                },
+                {
+                    q: "Când îți place cineva:",
+                    a: [
+                        { t: "O arăți clar", c: "A" },
+                        { t: "O arăți subtil", c: "B" },
+                        { t: "E greu de observat", c: "C" },
+                        { t: "Ascunzi complet", c: "D" }
+                    ]
+                },
+                {
+                    q: "Cât de des răspunzi la mesaje?",
+                    a: [
+                        { t: "Constant", c: "A" },
+                        { t: "Destul de constant", c: "B" },
+                        { t: "Inconstant", c: "C" },
+                        { t: "Foarte rar", c: "D" }
+                    ]
+                },
+                {
+                    q: "Cum gestionezi respingerea?",
+                    a: [
+                        { t: "O accepți matur", c: "A" },
+                        { t: "Te afectează puțin", c: "B" },
+                        { t: "Te afectează mult", c: "C" },
+                        { t: "Te închizi complet", c: "D" }
+                    ]
+                },
+                {
+                    q: "Scopul tău în conversație este:",
+                    a: [
+                        { t: "Să creez conexiune", c: "A" },
+                        { t: "Să fiu plăcut", c: "B" },
+                        { t: "Să nu greșesc", c: "C" },
+                        { t: "Să termin conversația", c: "D" }
+                    ]
+                },
+                {
+                    q: "Cum te-ai descrie?",
+                    a: [
+                        { t: "Sigur pe tine", c: "A" },
+                        { t: "Călduros", c: "B" },
+                        { t: "Overthinker", c: "C" },
+                        { t: "Distant", c: "D" }
+                    ]
+                }
+            ],
+            resultsData: {
+                A: {
+                    name: "🔥 Confident Flirter",
+                    desc: "Direct, sigur pe sine, atractiv. Risc: poate părea prea sigur uneori."
+                },
+                B: {
+                    name: "🙂 Friendly but Vague",
+                    desc: "Plăcut, dar neclar în intenții. Risc: ajunge în „friendzone”."
+                },
+                C: {
+                    name: "💭 Overthinker Texter",
+                    desc: "Analizează prea mult, se stresează. Risc: pierde spontaneitatea."
+                },
+                D: {
+                    name: "❄️ Dry / Avoidant",
+                    desc: "Evită implicarea emoțională. Risc: pare dezinteresat."
+                }
+            },
+            previewPoints: {
+                A: ["Direct și sigur pe tine", "Inițiezi conversații", "Comunici clar intențiile", "Atracție naturală"],
+                B: ["Prietenos și cald", "Echilibru în dialog", "Păstrezi confortul", "Ești plăcut de toată lumea"],
+                C: ["Analizezi detalii", "Te consumi emoțional", "Ai nevoie de validare", "Risc de blocaj"],
+                D: ["Ești rezervat", "Eviți expunerea", "Comunicare minimă", "Dai impresia de dezinteres"]
+            },
+            scoreKeys: ["A", "B", "C", "D"]
         },
-        { q: "What is your biggest strength?",
-          a: ["Power and pressure", "Leverage and balance", "Adaptability", "Discipline and precision"] },
+        en: {
+            pageTitle: "Love Test",
+            languageTitle: "Choose your language",
+            languageSubtitle: "Select a language to start the test.",
+            introText: "This test shows your love communication style and how confident you are when you like someone. Answer honestly for the most accurate result.",
+            introCta: "Start the test",
+            previewHeading: "Result Preview",
+            previewLocked: "Locked Result",
+            previewCtaPrimary: "Unlock full result — $1",
+            previewCtaBasic: "No thanks, show only the basic result",
+            previewTrust: "One-time payment • Instant access • No subscriptions",
+            manifesto: `Flirting isn’t about perfect lines or complicated strategies. It starts with clarity and courage. Be honest about your intentions and don’t try to be someone else. People feel authenticity faster than you think.
 
-        { q: "How do you like to win?",
-          a: ["Overwhelm with volume", "Control and wear them down", "Find the right moment", "Outclass with technique"] },
+Don’t overanalyze every message. If you have something to say, say it. If you don’t, it’s okay to be quiet. Controlled silence is more attractive than anxious texting. Accept that not every conversation will lead somewhere — and that’s normal.
 
-        { q: "What kind of footwork fits you best?",
-          a: ["Forward pressure", "Small steps and angles", "Switching stances", "Classic, tight boxing steps"] },
+Flirting isn’t pressure — it’s play. Humor, warmth, and genuine interest beat any “smart” line. Listen to what the other person says and build on it. Ask questions, but also share about yourself.
 
-        { q: "What pace do you prefer?",
-          a: ["High pace", "Methodical", "Adjusting as needed", "Measured and clean"] },
+Most important: don’t run from rejection. Rejection doesn’t define you, avoiding it limits you. The more you practice honest communication, the more relaxed and attractive you become.
 
-        { q: "What do you focus on in sparring?",
-          a: ["Landing big shots", "Clinch control", "Mixing in takedowns", "Timing and counters"] },
-
-        { q: "What’s your favorite range?",
-          a: ["Pocket fighting", "Clinch and inside", "Both inside and outside", "Mid-range with jab"] },
-
-        { q: "How do you handle pressure?",
-          a: ["Push forward", "Tie up and reset", "Change levels and move", "Stay composed and counter"] },
-
-        { q: "What kind of training excites you most?",
-          a: ["Heavy bag power rounds", "Grappling drills", "MMA-style circuits", "Pad work and timing"] },
-
-        { q: "What describes your mindset?",
-          a: ["Relentless", "Patient", "Versatile", "Focused"] },
-
-        { q: "How do you like to set up attacks?",
-          a: ["Feints into big hooks", "Grip fighting", "Jab into level change", "Jab and sharp counters"] },
-
-        { q: "Which defense is your go-to?",
-          a: ["Slip and fire back", "Clinch and smother", "Sprawl and circle", "High guard and counters"] },
-
-        { q: "What does a perfect round look like?",
-          a: ["High volume and damage", "Control and position wins", "Mix of striking and control", "Clean technique and dominance"] },
-
-        { q: "How do you recover between rounds?",
-          a: ["Deep breaths, keep pressure", "Slow it down, reset", "Adjust the plan", "Stay calm and technical"] },
-
-        { q: "What’s your ideal coach feedback?",
-          a: ["Let your hands go", "Stay heavy and tight", "Blend ranges", "Keep it crisp and sharp"] },
-
-        { q: "How do you approach endurance?",
-          a: ["Push through on grit", "Pace with control", "Mix bursts and recovery", "Efficiency over volume"] },
-
-        { q: "What makes you dangerous?",
-          a: ["Raw power", "Control in the clinch", "Unpredictability", "Perfect timing"] },
-
-        { q: "Which fighter style do you admire most?",
-          a: ["Brawler", "Grappling specialist", "Complete fighter", "Traditional technician"] },
-
-        { q: "When things go wrong, you…",
-          a: ["Swing back harder", "Tie up and reset", "Switch tactics", "Stay disciplined"] },
-
-        { q: "What’s your long-term goal?",
-          a: ["Be feared for power", "Be unbeatable in control", "Be complete in all areas", "Master the fundamentals"] }
-    ];
-
-    const resultsData = {
-        striker: {
-            name: "BRAWLER – PRESSURE BOXER",
-            desc: "You thrive on forward pressure, heavy hands, and relentless volume. Your style is built on forcing exchanges, breaking rhythm, and winning with grit. Focus on body shots, tight hooks, and conditioning so your pace never drops."
+Flirting isn’t about impressing. It’s about connecting.`,
+            successTitle: "Payment Successful! ✔️",
+            successCongrats: "Congrats! You discovered your love style.",
+            successWish: "Use this result as a guide, not a limit.",
+            successRestart: "Take the test again",
+            footerTitle: "Unlock the full result",
+            footerCtaPrimary: "Unlock full result — $1",
+            footerCtaBasic: "No thanks, show only the basic result",
+            footerTrust: "One-time payment • Instant access • No subscriptions",
+            questions: [
+                {
+                    q: "When you see someone you like, your first impulse is:",
+                    a: [
+                        { t: "I go and talk directly", c: "A" },
+                        { t: "I think a lot about what to say", c: "B" },
+                        { t: "I wait for a sign from them", c: "C" },
+                        { t: "I avoid contact, I’m afraid", c: "D" }
+                    ]
+                },
+                {
+                    q: "Your first message is usually:",
+                    a: [
+                        { t: "Funny / creative", c: "A" },
+                        { t: "Simple (\"hey\", \"what’s up?\")", c: "B" },
+                        { t: "Long and explanatory", c: "C" },
+                        { t: "I don’t send the first message", c: "D" }
+                    ]
+                },
+                {
+                    q: "If you don’t get a quick reply:",
+                    a: [
+                        { t: "I stay calm", c: "A" },
+                        { t: "I get a bit uneasy", c: "B" },
+                        { t: "I send another message", c: "C" },
+                        { t: "I get upset and give up", c: "D" }
+                    ]
+                },
+                {
+                    q: "Your conversation style is:",
+                    a: [
+                        { t: "Playful and flirty", c: "A" },
+                        { t: "Friendly", c: "B" },
+                        { t: "Serious and deep", c: "C" },
+                        { t: "Dry and to the point", c: "D" }
+                    ]
+                },
+                {
+                    q: "Your compliments are:",
+                    a: [
+                        { t: "Bold", c: "A" },
+                        { t: "Subtle", c: "B" },
+                        { t: "Very intense", c: "C" },
+                        { t: "Rare or none", c: "D" }
+                    ]
+                },
+                {
+                    q: "When it comes to dates:",
+                    a: [
+                        { t: "I propose a clear day and place", c: "A" },
+                        { t: "I suggest vaguely", c: "B" },
+                        { t: "I wait for the other person to decide", c: "C" },
+                        { t: "I avoid face-to-face dates", c: "D" }
+                    ]
+                },
+                {
+                    q: "How do you respond to their flirting?",
+                    a: [
+                        { t: "I match their level", c: "A" },
+                        { t: "I get shy", c: "B" },
+                        { t: "I’m not sure it’s flirting", c: "C" },
+                        { t: "I ignore it", c: "D" }
+                    ]
+                },
+                {
+                    q: "How much do you analyze messages?",
+                    a: [
+                        { t: "Not at all", c: "A" },
+                        { t: "A little", c: "B" },
+                        { t: "A lot", c: "C" },
+                        { t: "Very much", c: "D" }
+                    ]
+                },
+                {
+                    q: "In conversations:",
+                    a: [
+                        { t: "You ask lots of questions", c: "A" },
+                        { t: "You speak in balance", c: "B" },
+                        { t: "You talk more about yourself", c: "C" },
+                        { t: "You reply briefly", c: "D" }
+                    ]
+                },
+                {
+                    q: "If the conversation dies:",
+                    a: [
+                        { t: "I revive it", c: "A" },
+                        { t: "I let it fade naturally", c: "B" },
+                        { t: "I get anxious", c: "C" },
+                        { t: "I give up completely", c: "D" }
+                    ]
+                },
+                {
+                    q: "How confident are you?",
+                    a: [
+                        { t: "Very confident", c: "A" },
+                        { t: "Quite confident", c: "B" },
+                        { t: "Insecure", c: "C" },
+                        { t: "Very insecure", c: "D" }
+                    ]
+                },
+                {
+                    q: "When you like someone:",
+                    a: [
+                        { t: "You show it clearly", c: "A" },
+                        { t: "You show it subtly", c: "B" },
+                        { t: "It’s hard to notice", c: "C" },
+                        { t: "You hide it completely", c: "D" }
+                    ]
+                },
+                {
+                    q: "How often do you reply to messages?",
+                    a: [
+                        { t: "Consistently", c: "A" },
+                        { t: "Mostly consistently", c: "B" },
+                        { t: "Inconsistent", c: "C" },
+                        { t: "Very rarely", c: "D" }
+                    ]
+                },
+                {
+                    q: "How do you handle rejection?",
+                    a: [
+                        { t: "You accept it maturely", c: "A" },
+                        { t: "It affects you a little", c: "B" },
+                        { t: "It affects you a lot", c: "C" },
+                        { t: "You shut down completely", c: "D" }
+                    ]
+                },
+                {
+                    q: "Your goal in conversation is:",
+                    a: [
+                        { t: "To create connection", c: "A" },
+                        { t: "To be pleasant", c: "B" },
+                        { t: "Not to mess up", c: "C" },
+                        { t: "To end the conversation", c: "D" }
+                    ]
+                },
+                {
+                    q: "How would you describe yourself?",
+                    a: [
+                        { t: "Confident", c: "A" },
+                        { t: "Warm", c: "B" },
+                        { t: "Overthinker", c: "C" },
+                        { t: "Distant", c: "D" }
+                    ]
+                }
+            ],
+            resultsData: {
+                A: {
+                    name: "🔥 Confident Flirter",
+                    desc: "Direct, confident, and attractive. Risk: may come off too confident sometimes."
+                },
+                B: {
+                    name: "🙂 Friendly but Vague",
+                    desc: "Pleasant but unclear in intentions. Risk: ends up in the friendzone."
+                },
+                C: {
+                    name: "💭 Overthinker Texter",
+                    desc: "Overanalyzes and gets stressed. Risk: loses spontaneity."
+                },
+                D: {
+                    name: "❄️ Dry / Avoidant",
+                    desc: "Avoids emotional involvement. Risk: seems uninterested."
+                }
+            },
+            previewPoints: {
+                A: ["Direct and confident", "Initiates conversations", "Clear intentions", "Natural attraction"],
+                B: ["Friendly and warm", "Balanced dialogue", "Keeps comfort", "Likeable to everyone"],
+                C: ["Analyzes details", "Emotional overthinking", "Needs validation", "Risk of freezing"],
+                D: ["Reserved", "Avoids exposure", "Minimal communication", "Seems disinterested"]
+            },
+            scoreKeys: ["A", "B", "C", "D"]
         },
-        grappler: {
-            name: "CLINCH FIGHTER – CONTROL SPECIALIST",
-            desc: "You dominate by smothering, tying up, and controlling the fight in close. Your strength is leverage, balance, and patience. Train clinch entries, control positions, and short strikes that wear opponents down."
+        fr: {
+            pageTitle: "Test d'amour",
+            languageTitle: "Choisissez votre langue",
+            languageSubtitle: "Sélectionnez une langue pour commencer le test.",
+            introText: "Ce test montre votre style de communication amoureuse et votre confiance lorsque vous aimez quelqu’un. Répondez honnêtement pour un résultat plus précis.",
+            introCta: "Commencer le test",
+            previewHeading: "Aperçu du résultat",
+            previewLocked: "Résultat verrouillé",
+            previewCtaPrimary: "Débloquer le résultat complet — 1$",
+            previewCtaBasic: "Non merci, afficher seulement le résultat de base",
+            previewTrust: "Paiement unique • Accès instantané • Sans abonnement",
+            manifesto: `Draguer ne signifie pas avoir des répliques parfaites ou des stratégies compliquées. Cela commence par la clarté et le courage. Soyez honnête sur vos intentions et n’essayez pas d’être quelqu’un d’autre. Les gens sentent l’authenticité plus vite que vous ne le pensez.
+
+Ne suranalysez pas chaque message. Si vous avez quelque chose à dire, dites-le. Si vous n’avez rien à dire, c’est OK de se taire. Un silence maîtrisé est plus attirant que des messages envoyés par anxiété. Acceptez que toutes les conversations ne mèneront pas quelque part — et c’est normal.
+
+Le flirt n’est pas une pression — c’est un jeu. L’humour, la chaleur et l’intérêt sincère battent n’importe quelle phrase “maligne”. Écoutez l’autre et construisez à partir de ce qu’il/elle dit. Posez des questions, mais partagez aussi sur vous.
+
+Le plus important : ne fuyez pas le rejet. Le rejet ne vous définit pas, l’éviter vous limite. Plus vous pratiquez une communication honnête, plus vous devenez détendu et attirant.
+
+Le flirt ne consiste pas à impressionner. Il s’agit de connecter.`,
+            successTitle: "Paiement réussi ! ✔️",
+            successCongrats: "Félicitations ! Vous avez découvert votre style amoureux.",
+            successWish: "Utilisez ce résultat comme guide, pas comme limite.",
+            successRestart: "Refaire le test",
+            footerTitle: "Débloquez le résultat complet",
+            footerCtaPrimary: "Débloquer le résultat complet — 1$",
+            footerCtaBasic: "Non merci, afficher seulement le résultat de base",
+            footerTrust: "Paiement unique • Accès instantané • Sans abonnement",
+            questions: [
+                {
+                    q: "Quand vous voyez quelqu’un qui vous plaît, votre premier réflexe est :",
+                    a: [
+                        { t: "Je vais lui parler directement", c: "A" },
+                        { t: "Je réfléchis beaucoup à quoi dire", c: "B" },
+                        { t: "J’attends un signe de sa part", c: "C" },
+                        { t: "J’évite le contact, j’ai peur", c: "D" }
+                    ]
+                },
+                {
+                    q: "Votre premier message est généralement :",
+                    a: [
+                        { t: "Drôle / créatif", c: "A" },
+                        { t: "Simple (\"salut\", \"ça va ?\")", c: "B" },
+                        { t: "Long et explicatif", c: "C" },
+                        { t: "Je n’envoie pas le premier message", c: "D" }
+                    ]
+                },
+                {
+                    q: "Si vous ne recevez pas de réponse rapide :",
+                    a: [
+                        { t: "Je reste calme", c: "A" },
+                        { t: "Je deviens un peu inquiet", c: "B" },
+                        { t: "J’envoie un autre message", c: "C" },
+                        { t: "J’évite le contact, j’ai peur", c: "D" }
+                    ]
+                },
+                {
+                    q: "Votre style de conversation est :",
+                    a: [
+                        { t: "Joueur et flirtant", c: "A" },
+                        { t: "Amical", c: "B" },
+                        { t: "Sérieux et profond", c: "C" },
+                        { t: "Sec et direct", c: "D" }
+                    ]
+                },
+                {
+                    q: "Vos compliments sont :",
+                    a: [
+                        { t: "Audacieux", c: "A" },
+                        { t: "Subtils", c: "B" },
+                        { t: "Très intenses", c: "C" },
+                        { t: "Rares ou inexistants", c: "D" }
+                    ]
+                },
+                {
+                    q: "Quand il s’agit de rendez-vous :",
+                    a: [
+                        { t: "Je propose clairement un jour et un lieu", c: "A" },
+                        { t: "Je suggère vaguement", c: "B" },
+                        { t: "J’attends que l’autre personne décide", c: "C" },
+                        { t: "J’évite les rendez-vous en face à face", c: "D" }
+                    ]
+                },
+                {
+                    q: "Comment réagissez-vous à son flirt ?",
+                    a: [
+                        { t: "Je réponds au même niveau", c: "A" },
+                        { t: "Je suis gêné(e)", c: "B" },
+                        { t: "Je ne suis pas sûr(e) que ce soit du flirt", c: "C" },
+                        { t: "J’ignore", c: "D" }
+                    ]
+                },
+                {
+                    q: "À quel point analysez-vous les messages ?",
+                    a: [
+                        { t: "Pas du tout", c: "A" },
+                        { t: "Un peu", c: "B" },
+                        { t: "Beaucoup", c: "C" },
+                        { t: "Énormément", c: "D" }
+                    ]
+                },
+                {
+                    q: "Dans les conversations :",
+                    a: [
+                        { t: "Vous posez beaucoup de questions", c: "A" },
+                        { t: "Vous parlez de manière équilibrée", c: "B" },
+                        { t: "Vous parlez plus de vous", c: "C" },
+                        { t: "Vous répondez brièvement", c: "D" }
+                    ]
+                },
+                {
+                    q: "Si la conversation meurt :",
+                    a: [
+                        { t: "Je la relance", c: "A" },
+                        { t: "Je la laisse s’éteindre", c: "B" },
+                        { t: "Je deviens anxieux", c: "C" },
+                        { t: "J’abandonne complètement", c: "D" }
+                    ]
+                },
+                {
+                    q: "À quel point êtes-vous sûr(e) de vous ?",
+                    a: [
+                        { t: "Très sûr(e)", c: "A" },
+                        { t: "Plutôt sûr(e)", c: "B" },
+                        { t: "Peu sûr(e)", c: "C" },
+                        { t: "Très peu sûr(e)", c: "D" }
+                    ]
+                },
+                {
+                    q: "Quand vous aimez quelqu’un :",
+                    a: [
+                        { t: "Vous le montrez clairement", c: "A" },
+                        { t: "Vous le montrez subtilement", c: "B" },
+                        { t: "C’est difficile à remarquer", c: "C" },
+                        { t: "Vous le cachez complètement", c: "D" }
+                    ]
+                },
+                {
+                    q: "À quelle fréquence répondez-vous aux messages ?",
+                    a: [
+                        { t: "Constamment", c: "A" },
+                        { t: "Assez régulièrement", c: "B" },
+                        { t: "De façon irrégulière", c: "C" },
+                        { t: "Très rarement", c: "D" }
+                    ]
+                },
+                {
+                    q: "Comment gérez-vous le rejet ?",
+                    a: [
+                        { t: "Vous l’acceptez avec maturité", c: "A" },
+                        { t: "Cela vous affecte un peu", c: "B" },
+                        { t: "Cela vous affecte beaucoup", c: "C" },
+                        { t: "Vous vous fermez complètement", c: "D" }
+                    ]
+                },
+                {
+                    q: "Votre objectif dans la conversation est :",
+                    a: [
+                        { t: "Créer une connexion", c: "A" },
+                        { t: "Être agréable", c: "B" },
+                        { t: "Ne pas faire d’erreur", c: "C" },
+                        { t: "Terminer la conversation", c: "D" }
+                    ]
+                },
+                {
+                    q: "Comment vous décririez-vous ?",
+                    a: [
+                        { t: "Confiant(e)", c: "A" },
+                        { t: "Chaleureux/Chaleureuse", c: "B" },
+                        { t: "Trop dans l’analyse", c: "C" },
+                        { t: "Distant(e)", c: "D" }
+                    ]
+                }
+            ],
+            resultsData: {
+                A: {
+                    name: "🔥 Flirteur/Flirteuse confiant(e)",
+                    desc: "Direct, sûr de soi, attirant. Risque : peut paraître trop sûr(e) parfois."
+                },
+                B: {
+                    name: "🙂 Amical mais vague",
+                    desc: "Agréable, mais peu clair dans les intentions. Risque : finir en “friendzone”."
+                },
+                C: {
+                    name: "💭 Suranalyseur de messages",
+                    desc: "Analyse trop et se stresse. Risque : perd la spontanéité."
+                },
+                D: {
+                    name: "❄️ Sec / Évitant",
+                    desc: "Évite l’implication émotionnelle. Risque : paraît désintéressé."
+                }
+            },
+            previewPoints: {
+                A: ["Direct et confiant", "Initie les conversations", "Intentions claires", "Attirance naturelle"],
+                B: ["Amical et chaleureux", "Dialogue équilibré", "Garde le confort", "Apprécié de tous"],
+                C: ["Analyse les détails", "Surmenage émotionnel", "Besoin de validation", "Risque de blocage"],
+                D: ["Réservé", "Évite l’exposition", "Communication minimale", "Semble désintéressé"]
+            },
+            scoreKeys: ["A", "B", "C", "D"]
         },
-        hybrid: {
-            name: "COMPLETE FIGHTER – MIXED STYLE",
-            desc: "You’re the adaptable fighter who blends pressure with control. You can box, clinch, and switch tactics based on the moment. Keep drilling transitions, stance changes, and timing so you stay unpredictable."
+        es: {
+            pageTitle: "Test de amor",
+            languageTitle: "Elige tu idioma",
+            languageSubtitle: "Selecciona un idioma para comenzar la prueba.",
+            introText: "Este test muestra tu estilo de comunicación en el amor y qué tan seguro eres cuando te gusta alguien. Responde con sinceridad para un resultado preciso.",
+            introCta: "Comenzar la prueba",
+            previewHeading: "Vista previa del resultado",
+            previewLocked: "Resultado bloqueado",
+            previewCtaPrimary: "Desbloquear resultado completo — 1$",
+            previewCtaBasic: "No gracias, mostrar solo el resultado básico",
+            previewTrust: "Pago único • Acceso instantáneo • Sin suscripción",
+            manifesto: `Ligar no significa tener frases perfectas ni estrategias complicadas. Empieza con claridad y valentía. Sé honesto con tus intenciones y no intentes ser alguien que no eres. La gente percibe la autenticidad más rápido de lo que crees.
+
+No sobreanalices cada mensaje. Si tienes algo que decir, dilo. Si no, está bien guardar silencio. El silencio controlado es más atractivo que los mensajes enviados por ansiedad. Acepta que no todas las conversaciones llevarán a algo — y eso es normal.
+
+El coqueteo no es presión — es juego. El humor, la calidez y el interés genuino superan cualquier frase “inteligente”. Escucha a la otra persona y construye a partir de lo que dice. Haz preguntas, pero también comparte sobre ti.
+
+Lo más importante: no huyas del rechazo. El rechazo no te define, evitarlo te limita. Cuanto más practiques una comunicación honesta, más relajado y atractivo serás.
+
+Ligar no es impresionar. Es conectar.`,
+            successTitle: "¡Pago realizado! ✔️",
+            successCongrats: "¡Felicidades! Descubriste tu estilo en el amor.",
+            successWish: "Usa este resultado como guía, no como límite.",
+            successRestart: "Hacer la prueba otra vez",
+            footerTitle: "Desbloquea el resultado completo",
+            footerCtaPrimary: "Desbloquear resultado completo — 1$",
+            footerCtaBasic: "No gracias, mostrar solo el resultado básico",
+            footerTrust: "Pago único • Acceso instantáneo • Sin suscripción",
+            questions: [
+                {
+                    q: "Cuando ves a alguien que te gusta, tu primer impulso es:",
+                    a: [
+                        { t: "Voy y hablo directamente", c: "A" },
+                        { t: "Pienso mucho qué decir", c: "B" },
+                        { t: "Espero una señal de su parte", c: "C" },
+                        { t: "Evito el contacto, tengo miedo", c: "D" }
+                    ]
+                },
+                {
+                    q: "Tu primer mensaje suele ser:",
+                    a: [
+                        { t: "Divertido / creativo", c: "A" },
+                        { t: "Simple (\"hey\", \"¿qué tal?\")", c: "B" },
+                        { t: "Largo y explicativo", c: "C" },
+                        { t: "No envío el primer mensaje", c: "D" }
+                    ]
+                },
+                {
+                    q: "Si no recibes una respuesta rápida:",
+                    a: [
+                        { t: "Me mantengo calmado", c: "A" },
+                        { t: "Me pongo un poco nervioso", c: "B" },
+                        { t: "Mando otro mensaje", c: "C" },
+                        { t: "Me enojo y lo dejo", c: "D" }
+                    ]
+                },
+                {
+                    q: "Tu estilo de conversación es:",
+                    a: [
+                        { t: "Juguetón y coquetón", c: "A" },
+                        { t: "Amistoso", c: "B" },
+                        { t: "Serio y profundo", c: "C" },
+                        { t: "Seco y directo", c: "D" }
+                    ]
+                },
+                {
+                    q: "Tus cumplidos son:",
+                    a: [
+                        { t: "Atrevidos", c: "A" },
+                        { t: "Sutiles", c: "B" },
+                        { t: "Muy intensos", c: "C" },
+                        { t: "Raros o inexistentes", c: "D" }
+                    ]
+                },
+                {
+                    q: "Cuando se trata de citas:",
+                    a: [
+                        { t: "Propongo día y lugar claros", c: "A" },
+                        { t: "Sugiero vagamente", c: "B" },
+                        { t: "Espero a que la otra persona decida", c: "C" },
+                        { t: "Evito las citas cara a cara", c: "D" }
+                    ]
+                },
+                {
+                    q: "¿Cómo respondes a su coqueteo?",
+                    a: [
+                        { t: "Respondo al mismo nivel", c: "A" },
+                        { t: "Me pongo tímido", c: "B" },
+                        { t: "No estoy seguro de que sea coqueteo", c: "C" },
+                        { t: "Lo ignoro", c: "D" }
+                    ]
+                },
+                {
+                    q: "¿Cuánto analizas los mensajes?",
+                    a: [
+                        { t: "Nada", c: "A" },
+                        { t: "Un poco", c: "B" },
+                        { t: "Mucho", c: "C" },
+                        { t: "Muchísimo", c: "D" }
+                    ]
+                },
+                {
+                    q: "En las conversaciones:",
+                    a: [
+                        { t: "Haces muchas preguntas", c: "A" },
+                        { t: "Hablas con equilibrio", c: "B" },
+                        { t: "Hablas más de ti", c: "C" },
+                        { t: "Respondes breve", c: "D" }
+                    ]
+                },
+                {
+                    q: "Si la conversación muere:",
+                    a: [
+                        { t: "La reavivo", c: "A" },
+                        { t: "La dejo morir naturalmente", c: "B" },
+                        { t: "Me pongo ansioso", c: "C" },
+                        { t: "Renuncio por completo", c: "D" }
+                    ]
+                },
+                {
+                    q: "¿Qué tan seguro eres?",
+                    a: [
+                        { t: "Muy seguro", c: "A" },
+                        { t: "Bastante seguro", c: "B" },
+                        { t: "Inseguro", c: "C" },
+                        { t: "Muy inseguro", c: "D" }
+                    ]
+                },
+                {
+                    q: "Cuando te gusta alguien:",
+                    a: [
+                        { t: "Lo muestras claramente", c: "A" },
+                        { t: "Lo muestras sutilmente", c: "B" },
+                        { t: "Es difícil notarlo", c: "C" },
+                        { t: "Lo ocultas por completo", c: "D" }
+                    ]
+                },
+                {
+                    q: "¿Con qué frecuencia respondes mensajes?",
+                    a: [
+                        { t: "De forma constante", c: "A" },
+                        { t: "Bastante constante", c: "B" },
+                        { t: "Inconstante", c: "C" },
+                        { t: "Muy rara vez", c: "D" }
+                    ]
+                },
+                {
+                    q: "¿Cómo manejas el rechazo?",
+                    a: [
+                        { t: "Lo aceptas con madurez", c: "A" },
+                        { t: "Te afecta un poco", c: "B" },
+                        { t: "Te afecta mucho", c: "C" },
+                        { t: "Te cierras por completo", c: "D" }
+                    ]
+                },
+                {
+                    q: "Tu objetivo en la conversación es:",
+                    a: [
+                        { t: "Crear conexión", c: "A" },
+                        { t: "Ser agradable", c: "B" },
+                        { t: "No equivocarte", c: "C" },
+                        { t: "Terminar la conversación", c: "D" }
+                    ]
+                },
+                {
+                    q: "¿Cómo te describirías?",
+                    a: [
+                        { t: "Confiado", c: "A" },
+                        { t: "Cálido", c: "B" },
+                        { t: "Sobrepensador", c: "C" },
+                        { t: "Distante", c: "D" }
+                    ]
+                }
+            ],
+            resultsData: {
+                A: {
+                    name: "🔥 Coqueto seguro",
+                    desc: "Directo, seguro y atractivo. Riesgo: puede parecer demasiado seguro a veces."
+                },
+                B: {
+                    name: "🙂 Amistoso pero vago",
+                    desc: "Agradable pero poco claro en sus intenciones. Riesgo: termina en la friendzone."
+                },
+                C: {
+                    name: "💭 Sobreanalizador de mensajes",
+                    desc: "Analiza demasiado y se estresa. Riesgo: pierde espontaneidad."
+                },
+                D: {
+                    name: "❄️ Seco / evitativo",
+                    desc: "Evita la implicación emocional. Riesgo: parece desinteresado."
+                }
+            },
+            previewPoints: {
+                A: ["Directo y seguro", "Inicia conversaciones", "Intenciones claras", "Atracción natural"],
+                B: ["Amistoso y cálido", "Diálogo equilibrado", "Mantiene la comodidad", "Agradable para todos"],
+                C: ["Analiza detalles", "Sobrecarga emocional", "Necesita validación", "Riesgo de bloqueo"],
+                D: ["Reservado", "Evita exponerse", "Comunicación mínima", "Parece desinteresado"]
+            },
+            scoreKeys: ["A", "B", "C", "D"]
         },
-        traditional: {
-            name: "TECHNICIAN – CLASSIC BOXING STYLE",
-            desc: "You win with clean fundamentals: sharp jabs, tight defense, and smart counters. Your strength is precision and discipline. Focus on footwork, timing, and efficiency to outclass opponents over rounds."
+        it: {
+            pageTitle: "Test d'amore",
+            languageTitle: "Scegli la tua lingua",
+            languageSubtitle: "Seleziona una lingua per iniziare il test.",
+            introText: "Questo test mostra il tuo stile di comunicazione in amore e quanto sei sicuro quando ti piace qualcuno. Rispondi sinceramente per un risultato accurato.",
+            introCta: "Inizia il test",
+            previewHeading: "Anteprima del risultato",
+            previewLocked: "Risultato bloccato",
+            previewCtaPrimary: "Sblocca il risultato completo — 1$",
+            previewCtaBasic: "No grazie, mostra solo il risultato base",
+            previewTrust: "Pagamento unico • Accesso immediato • Nessun abbonamento",
+            manifesto: `Flirtare non significa avere frasi perfette o strategie complicate. Significa, prima di tutto, chiarezza e coraggio. Sii onesto con le tue intenzioni e non cercare di essere qualcun altro. Le persone percepiscono l’autenticità più velocemente di quanto pensi.
+
+Non analizzare troppo ogni messaggio. Se hai qualcosa da dire, dillo. Se non ce l’hai, va bene stare in silenzio. Il silenzio controllato è più attraente dei messaggi inviati per ansia. Accetta che non ogni conversazione porterà a qualcosa — ed è normale.
+
+Il flirt non è pressione — è gioco. Umorismo, calore e interesse genuino battono qualsiasi frase “intelligente”. Ascolta l’altra persona e costruisci su ciò che dice. Fai domande, ma condividi anche su di te.
+
+La cosa più importante: non scappare dal rifiuto. Il rifiuto non ti definisce, evitarlo ti limita. Più pratichi una comunicazione onesta, più diventi rilassato e attraente.
+
+Flirtare non significa impressionare. Significa connettersi.`,
+            successTitle: "Pagamento riuscito! ✔️",
+            successCongrats: "Complimenti! Hai scoperto il tuo stile in amore.",
+            successWish: "Usa questo risultato come guida, non come limite.",
+            successRestart: "Ripeti il test",
+            footerTitle: "Sblocca il risultato completo",
+            footerCtaPrimary: "Sblocca il risultato completo — 1$",
+            footerCtaBasic: "No grazie, mostra solo il risultato base",
+            footerTrust: "Pagamento unico • Accesso immediato • Nessun abbonamento",
+            questions: [
+                {
+                    q: "Quando vedi qualcuno che ti piace, il tuo primo impulso è:",
+                    a: [
+                        { t: "Vado e parlo direttamente", c: "A" },
+                        { t: "Penso molto a cosa dire", c: "B" },
+                        { t: "Aspetto un segnale da lei/lui", c: "C" },
+                        { t: "Evito il contatto, ho paura", c: "D" }
+                    ]
+                },
+                {
+                    q: "Il tuo primo messaggio di solito è:",
+                    a: [
+                        { t: "Divertente / creativo", c: "A" },
+                        { t: "Semplice (\"ciao\", \"come va?\")", c: "B" },
+                        { t: "Lungo e spiegato", c: "C" },
+                        { t: "Non invio il primo messaggio", c: "D" }
+                    ]
+                },
+                {
+                    q: "Se non ricevi una risposta rapida:",
+                    a: [
+                        { t: "Rimango calmo", c: "A" },
+                        { t: "Divento un po’ inquieto", c: "B" },
+                        { t: "Invio un altro messaggio", c: "C" },
+                        { t: "Mi arrabbio e lascio perdere", c: "D" }
+                    ]
+                },
+                {
+                    q: "Il tuo stile di conversazione è:",
+                    a: [
+                        { t: "Giocoso e flirtante", c: "A" },
+                        { t: "Amichevole", c: "B" },
+                        { t: "Serio e profondo", c: "C" },
+                        { t: "Secco e diretto", c: "D" }
+                    ]
+                },
+                {
+                    q: "I tuoi complimenti sono:",
+                    a: [
+                        { t: "Audaci", c: "A" },
+                        { t: "Sottili", c: "B" },
+                        { t: "Molto intensi", c: "C" },
+                        { t: "Rari o inesistenti", c: "D" }
+                    ]
+                },
+                {
+                    q: "Quando si tratta di appuntamenti:",
+                    a: [
+                        { t: "Propongo chiaramente giorno e luogo", c: "A" },
+                        { t: "Suggerisco vagamente", c: "B" },
+                        { t: "Aspetto che l’altra persona decida", c: "C" },
+                        { t: "Evito appuntamenti faccia a faccia", c: "D" }
+                    ]
+                },
+                {
+                    q: "Come reagisci al suo flirt?",
+                    a: [
+                        { t: "Rispondo allo stesso livello", c: "A" },
+                        { t: "Mi imbarazzo", c: "B" },
+                        { t: "Non sono sicuro che sia flirt", c: "C" },
+                        { t: "Ignoro", c: "D" }
+                    ]
+                },
+                {
+                    q: "Quanto analizzi i messaggi?",
+                    a: [
+                        { t: "Per niente", c: "A" },
+                        { t: "Un po’", c: "B" },
+                        { t: "Molto", c: "C" },
+                        { t: "Tantissimo", c: "D" }
+                    ]
+                },
+                {
+                    q: "Nelle conversazioni:",
+                    a: [
+                        { t: "Fai molte domande", c: "A" },
+                        { t: "Parli in modo equilibrato", c: "B" },
+                        { t: "Parli più di te", c: "C" },
+                        { t: "Rispondi in modo breve", c: "D" }
+                    ]
+                },
+                {
+                    q: "Se la conversazione muore:",
+                    a: [
+                        { t: "La riaccendo", c: "A" },
+                        { t: "La lascio morire naturalmente", c: "B" },
+                        { t: "Divento ansioso", c: "C" },
+                        { t: "Rinuncio del tutto", c: "D" }
+                    ]
+                },
+                {
+                    q: "Quanto sei sicuro di te?",
+                    a: [
+                        { t: "Molto sicuro", c: "A" },
+                        { t: "Abbastanza sicuro", c: "B" },
+                        { t: "Insicuro", c: "C" },
+                        { t: "Molto insicuro", c: "D" }
+                    ]
+                },
+                {
+                    q: "Quando ti piace qualcuno:",
+                    a: [
+                        { t: "Lo mostri chiaramente", c: "A" },
+                        { t: "Lo mostri in modo sottile", c: "B" },
+                        { t: "È difficile notarlo", c: "C" },
+                        { t: "Lo nascondi completamente", c: "D" }
+                    ]
+                },
+                {
+                    q: "Con che frequenza rispondi ai messaggi?",
+                    a: [
+                        { t: "Costantemente", c: "A" },
+                        { t: "Abbastanza costantemente", c: "B" },
+                        { t: "In modo incostante", c: "C" },
+                        { t: "Molto raramente", c: "D" }
+                    ]
+                },
+                {
+                    q: "Come gestisci il rifiuto?",
+                    a: [
+                        { t: "Lo accetti con maturità", c: "A" },
+                        { t: "Ti colpisce un po’", c: "B" },
+                        { t: "Ti colpisce molto", c: "C" },
+                        { t: "Ti chiudi completamente", c: "D" }
+                    ]
+                },
+                {
+                    q: "Il tuo obiettivo nella conversazione è:",
+                    a: [
+                        { t: "Creare connessione", c: "A" },
+                        { t: "Essere piacevole", c: "B" },
+                        { t: "Non sbagliare", c: "C" },
+                        { t: "Finire la conversazione", c: "D" }
+                    ]
+                },
+                {
+                    q: "Come ti descriveresti?",
+                    a: [
+                        { t: "Sicuro di te", c: "A" },
+                        { t: "Caloroso", c: "B" },
+                        { t: "Overthinker", c: "C" },
+                        { t: "Distante", c: "D" }
+                    ]
+                }
+            ],
+            resultsData: {
+                A: {
+                    name: "🔥 Flirtatore/Flirtatrice sicuro/a",
+                    desc: "Diretto, sicuro e attraente. Rischio: può sembrare troppo sicuro a volte."
+                },
+                B: {
+                    name: "🙂 Amichevole ma vago",
+                    desc: "Piacevole ma poco chiaro nelle intenzioni. Rischio: finisce in friendzone."
+                },
+                C: {
+                    name: "💭 Overthinker dei messaggi",
+                    desc: "Analizza troppo e si stressa. Rischio: perde spontaneità."
+                },
+                D: {
+                    name: "❄️ Secco / evitante",
+                    desc: "Evita il coinvolgimento emotivo. Rischio: sembra disinteressato."
+                }
+            },
+            previewPoints: {
+                A: ["Diretto e sicuro", "Inizia conversazioni", "Intenzioni chiare", "Attrazione naturale"],
+                B: ["Amichevole e caloroso", "Dialogo equilibrato", "Mantiene il comfort", "Piace a tutti"],
+                C: ["Analizza i dettagli", "Sovraccarico emotivo", "Ha bisogno di validazione", "Rischio di blocco"],
+                D: ["Riservato", "Evita l’esposizione", "Comunicazione minima", "Sembra disinteressato"]
+            },
+            scoreKeys: ["A", "B", "C", "D"]
+        },
+        de: {
+            pageTitle: "Liebestest",
+            languageTitle: "Sprache wählen",
+            languageSubtitle: "Wähle eine Sprache, um den Test zu starten.",
+            introText: "Dieser Test zeigt deinen Kommunikationsstil in der Liebe und wie sicher du bist, wenn dir jemand gefällt. Antworte ehrlich für ein genaues Ergebnis.",
+            introCta: "Test starten",
+            previewHeading: "Ergebnisvorschau",
+            previewLocked: "Ergebnis gesperrt",
+            previewCtaPrimary: "Vollständiges Ergebnis freischalten — 1$",
+            previewCtaBasic: "Nein danke, nur das Grundresultat anzeigen",
+            previewTrust: "Einmalzahlung • Sofortzugang • Kein Abo",
+            manifesto: `Flirten bedeutet nicht perfekte Sprüche oder komplizierte Strategien. Es beginnt mit Klarheit und Mut. Sei ehrlich mit deinen Absichten und versuche nicht, jemand anderes zu sein. Menschen spüren Authentizität schneller, als du denkst.
+
+Analysiere nicht jede Nachricht. Wenn du etwas sagen willst, sag es. Wenn nicht, ist Schweigen okay. Kontrollierte Stille ist attraktiver als Nachrichten aus Angst. Akzeptiere, dass nicht jedes Gespräch irgendwohin führt — und das ist normal.
+
+Flirt ist kein Druck — es ist ein Spiel. Humor, Wärme und echtes Interesse schlagen jede “clevere” Linie. Höre zu und baue auf dem auf, was die andere Person sagt. Stelle Fragen, aber erzähle auch von dir.
+
+Am wichtigsten: Laufe nicht vor Zurückweisung davon. Zurückweisung definiert dich nicht, sie zu vermeiden begrenzt dich. Je mehr du ehrliche Kommunikation übst, desto entspannter und attraktiver wirst du.
+
+Flirten bedeutet nicht zu beeindrucken. Es geht darum, zu verbinden.`,
+            successTitle: "Zahlung erfolgreich! ✔️",
+            successCongrats: "Glückwunsch! Du hast deinen Liebesstil entdeckt.",
+            successWish: "Nutze dieses Ergebnis als Leitfaden, nicht als Grenze.",
+            successRestart: "Test erneut machen",
+            footerTitle: "Vollständiges Ergebnis freischalten",
+            footerCtaPrimary: "Vollständiges Ergebnis freischalten — 1$",
+            footerCtaBasic: "Nein danke, nur das Grundresultat anzeigen",
+            footerTrust: "Einmalzahlung • Sofortzugang • Kein Abo",
+            questions: [
+                {
+                    q: "Wenn du jemanden siehst, der dir gefällt, ist dein erster Impuls:",
+                    a: [
+                        { t: "Ich gehe hin und spreche direkt", c: "A" },
+                        { t: "Ich denke lange darüber nach, was ich sagen soll", c: "B" },
+                        { t: "Ich warte auf ein Zeichen von ihm/ihr", c: "C" },
+                        { t: "Ich vermeide Kontakt, ich habe Angst", c: "D" }
+                    ]
+                },
+                {
+                    q: "Deine erste Nachricht ist meistens:",
+                    a: [
+                        { t: "Lustig / kreativ", c: "A" },
+                        { t: "Einfach (\"hi\", \"wie geht’s?\")", c: "B" },
+                        { t: "Lang und erklärend", c: "C" },
+                        { t: "Ich schreibe nicht zuerst", c: "D" }
+                    ]
+                },
+                {
+                    q: "Wenn du keine schnelle Antwort bekommst:",
+                    a: [
+                        { t: "Ich bleibe ruhig", c: "A" },
+                        { t: "Ich werde etwas unruhig", c: "B" },
+                        { t: "Ich schicke noch eine Nachricht", c: "C" },
+                        { t: "Ich werde wütend und gebe auf", c: "D" }
+                    ]
+                },
+                {
+                    q: "Dein Gesprächsstil ist:",
+                    a: [
+                        { t: "Verspielt und flirtend", c: "A" },
+                        { t: "Freundlich", c: "B" },
+                        { t: "Ernst und tiefgründig", c: "C" },
+                        { t: "Trocken und direkt", c: "D" }
+                    ]
+                },
+                {
+                    q: "Deine Komplimente sind:",
+                    a: [
+                        { t: "Kühn", c: "A" },
+                        { t: "Subtil", c: "B" },
+                        { t: "Sehr intensiv", c: "C" },
+                        { t: "Selten oder keine", c: "D" }
+                    ]
+                },
+                {
+                    q: "Wenn es um Dates geht:",
+                    a: [
+                        { t: "Ich schlage klar Tag und Ort vor", c: "A" },
+                        { t: "Ich schlage vage etwas vor", c: "B" },
+                        { t: "Ich warte, dass die andere Person entscheidet", c: "C" },
+                        { t: "Ich vermeide Treffen von Angesicht zu Angesicht", c: "D" }
+                    ]
+                },
+                {
+                    q: "Wie reagierst du auf sein/ihr Flirten?",
+                    a: [
+                        { t: "Ich erwidere auf dem gleichen Niveau", c: "A" },
+                        { t: "Ich werde schüchtern", c: "B" },
+                        { t: "Ich bin nicht sicher, ob es Flirten ist", c: "C" },
+                        { t: "Ich ignoriere es", c: "D" }
+                    ]
+                },
+                {
+                    q: "Wie sehr analysierst du Nachrichten?",
+                    a: [
+                        { t: "Gar nicht", c: "A" },
+                        { t: "Ein wenig", c: "B" },
+                        { t: "Viel", c: "C" },
+                        { t: "Sehr viel", c: "D" }
+                    ]
+                },
+                {
+                    q: "In Gesprächen:",
+                    a: [
+                        { t: "Stellst du viele Fragen", c: "A" },
+                        { t: "Sprichst du ausgewogen", c: "B" },
+                        { t: "Sprichst du mehr über dich", c: "C" },
+                        { t: "Antwortest du kurz", c: "D" }
+                    ]
+                },
+                {
+                    q: "Wenn das Gespräch stirbt:",
+                    a: [
+                        { t: "Belebe ich es wieder", c: "A" },
+                        { t: "Lasse ich es natürlich auslaufen", c: "B" },
+                        { t: "Werde ich nervös", c: "C" },
+                        { t: "Gebe ich komplett auf", c: "D" }
+                    ]
+                },
+                {
+                    q: "Wie selbstsicher bist du?",
+                    a: [
+                        { t: "Sehr selbstsicher", c: "A" },
+                        { t: "Ziemlich selbstsicher", c: "B" },
+                        { t: "Unsicher", c: "C" },
+                        { t: "Sehr unsicher", c: "D" }
+                    ]
+                },
+                {
+                    q: "Wenn dir jemand gefällt:",
+                    a: [
+                        { t: "Zeigst du es klar", c: "A" },
+                        { t: "Zeigst du es subtil", c: "B" },
+                        { t: "Es ist schwer zu merken", c: "C" },
+                        { t: "Versteckst du es komplett", c: "D" }
+                    ]
+                },
+                {
+                    q: "Wie oft antwortest du auf Nachrichten?",
+                    a: [
+                        { t: "Konstant", c: "A" },
+                        { t: "Ziemlich konstant", c: "B" },
+                        { t: "Unbeständig", c: "C" },
+                        { t: "Sehr selten", c: "D" }
+                    ]
+                },
+                {
+                    q: "Wie gehst du mit Zurückweisung um?",
+                    a: [
+                        { t: "Du akzeptierst sie reif", c: "A" },
+                        { t: "Sie trifft dich ein wenig", c: "B" },
+                        { t: "Sie trifft dich sehr", c: "C" },
+                        { t: "Du schließt dich komplett", c: "D" }
+                    ]
+                },
+                {
+                    q: "Dein Ziel im Gespräch ist:",
+                    a: [
+                        { t: "Verbindung schaffen", c: "A" },
+                        { t: "Angenehm zu sein", c: "B" },
+                        { t: "Keine Fehler zu machen", c: "C" },
+                        { t: "Das Gespräch zu beenden", c: "D" }
+                    ]
+                },
+                {
+                    q: "Wie würdest du dich beschreiben?",
+                    a: [
+                        { t: "Selbstbewusst", c: "A" },
+                        { t: "Warmherzig", c: "B" },
+                        { t: "Overthinker", c: "C" },
+                        { t: "Distanziert", c: "D" }
+                    ]
+                }
+            ],
+            resultsData: {
+                A: {
+                    name: "🔥 Selbstbewusster Flirter",
+                    desc: "Direkt, selbstsicher und attraktiv. Risiko: kann manchmal zu selbstsicher wirken."
+                },
+                B: {
+                    name: "🙂 Freundlich, aber vage",
+                    desc: "Angenehm, aber unklar in den Absichten. Risiko: landet in der Friendzone."
+                },
+                C: {
+                    name: "💭 Überanalysierender Texter",
+                    desc: "Analysiert zu viel und stresst sich. Risiko: verliert Spontanität."
+                },
+                D: {
+                    name: "❄️ Trocken / vermeidend",
+                    desc: "Vermeidet emotionale Beteiligung. Risiko: wirkt desinteressiert."
+                }
+            },
+            previewPoints: {
+                A: ["Direkt und selbstbewusst", "Initiiert Gespräche", "Klare Absichten", "Natürliche Anziehung"],
+                B: ["Freundlich und warm", "Ausgewogener Dialog", "Bewahrt Komfort", "Bei allen beliebt"],
+                C: ["Analysiert Details", "Emotionale Überlastung", "Braucht Bestätigung", "Risiko zu blockieren"],
+                D: ["Reserviert", "Vermeidet Offenheit", "Minimale Kommunikation", "Wirkt desinteressiert"]
+            },
+            scoreKeys: ["A", "B", "C", "D"]
         }
     };
-
-    const scoreKeys = ["striker", "grappler", "hybrid", "traditional"];
 
     const buildScores = () => scoreKeys.reduce((acc, key) => {
         acc[key] = 0;
@@ -214,37 +1326,48 @@ Your fighting style is your signature—define it, sharpen it, and own it.
     }, {});
 
     let current = 0;
-    let scores = buildScores();
-
-    const previewPoints = {
-        striker: [
-            "Pressure-first offense and heavy hands",
-            "Inside combinations and body work",
-            "Conditioning to keep a high pace",
-            "Short, explosive hooks and uppercuts"
-        ],
-        grappler: [
-            "Clinch entries and control positions",
-            "Balance, leverage, and smothering pressure",
-            "Dirty boxing and short strikes",
-            "Patience to break opponents down"
-        ],
-        hybrid: [
-            "Blend pressure with control",
-            "Switch ranges and tactics smoothly",
-            "Unpredictable rhythm and timing",
-            "Well-rounded skill development"
-        ],
-        traditional: [
-            "Clean jab and sharp counters",
-            "Footwork and distance control",
-            "Disciplined defense and composure",
-            "Efficiency over wasted motion"
-        ]
-    };
+    let scores = {};
 
     function bestChoice() {
         return scoreKeys.reduce((best, key) => scores[key] > scores[best] ? key : best, scoreKeys[0]);
+    }
+
+    function setLanguage(lang) {
+        const locale = locales[lang] || locales.ro;
+        currentLang = lang in locales ? lang : "ro";
+        document.documentElement.lang = currentLang;
+        document.title = locale.pageTitle;
+
+        document.getElementById("language-title").innerText = locale.languageTitle;
+        document.getElementById("language-subtitle").innerText = locale.languageSubtitle;
+        document.getElementById("intro-text").innerText = locale.introText;
+        document.getElementById("intro-cta").innerText = locale.introCta;
+        document.getElementById("preview-heading").innerText = locale.previewHeading;
+        document.getElementById("preview-lock").innerText = locale.previewLocked;
+        document.getElementById("preview-cta-primary").innerText = locale.previewCtaPrimary;
+        document.getElementById("preview-cta-basic").innerText = locale.previewCtaBasic;
+        document.getElementById("preview-trust").innerText = locale.previewTrust;
+        document.getElementById("manifesto-text").innerText = locale.manifesto;
+        document.getElementById("success-title").innerText = locale.successTitle;
+        document.getElementById("success-congrats").innerText = locale.successCongrats;
+        document.getElementById("success-wish").innerText = locale.successWish;
+        document.getElementById("success-restart").innerText = locale.successRestart;
+        document.getElementById("footer-title").innerText = locale.footerTitle;
+        document.getElementById("footer-cta-primary").innerText = locale.footerCtaPrimary;
+        document.getElementById("footer-cta-basic").innerText = locale.footerCtaBasic;
+        document.getElementById("footer-trust").innerText = locale.footerTrust;
+
+        questions = locale.questions;
+        resultsData = locale.resultsData;
+        previewPoints = locale.previewPoints;
+        scoreKeys = locale.scoreKeys;
+        scores = buildScores();
+    }
+
+    function selectLanguage(lang) {
+        localStorage.setItem("lang", lang);
+        setLanguage(lang);
+        navigate("intro");
     }
 
     function navigate(id) {
@@ -321,10 +1444,11 @@ Your fighting style is your signature—define it, sharpen it, and own it.
     }
 
     window.onload = () => {
+        const storedLang = localStorage.getItem("lang") || "ro";
+        setLanguage(storedLang);
         const params = new URLSearchParams(window.location.search);
         if (params.has('session_id')) {
             const plan = params.get('plan');
-            const isSub = params.get('isSub');
             const savedPlan = localStorage.getItem("lastPlanChoice");
             const resolvedPlan = resultsData[plan]
                 ? plan
@@ -337,11 +1461,8 @@ Your fighting style is your signature—define it, sharpen it, and own it.
                 document.getElementById('final-type').innerText = resultsData[resolvedPlan].name;
                 document.getElementById('final-desc').innerText = resultsData[resolvedPlan].desc;
             }
-
-            if (isSub === 'true') {
-                const notif = document.getElementById('email-notif');
-                if (notif) notif.innerHTML = "ROADMAP SENT VIA EMAIL! CHECK YOUR INBOX.";
-            }
+        } else {
+            navigate('language');
         }
     }
 </script>
