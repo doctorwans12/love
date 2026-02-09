@@ -1,20 +1,21 @@
 {
-  "name": "love-talk-test",
+  "name": "fighters-path",
   "version": "1.0.0",
-  "description": "Minimal dating personality test with Stripe paywall",
-  "private": false,
+  "description": "Fighter style quiz + Stripe payments + weekly email roadmap (100 steps) using Node.js, Stripe, Nodemailer, Cron, LowDB.",
   "main": "server.js",
-  "type": "commonjs",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "lowdb": "^1.0.0",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^7.0.13",
     "stripe": "^16.12.0"
   }
 }
