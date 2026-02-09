@@ -1,7 +1,7 @@
 {
   "name": "love-test",
   "version": "1.0.0",
-  "description": "Love test quiz with Stripe one-time payment.",
+  "description": "Love quiz with Stripe one-time payment.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -16,4 +16,5 @@
     "stripe": "^16.12.0"
   }
 }
+
 
