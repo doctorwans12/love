@@ -1,299 +1,297 @@
-"use strict";
-
+// server.js
 require("dotenv").config();
 
-const path = require("path");
 const express = require("express");
-const cors = require("cors");
+const path = require("path");
+const nodemailer = require("nodemailer");
+const cron = require("node-cron");
 const Stripe = require("stripe");
 
+// ---- VALIDARE ENV (ca să nu pornești serverul “în gol”) ----
+const REQUIRED_ENVS = [
+  "STRIPE_SECRET_KEY",
+  "PRICE_ID_SUB",
+  "PRICE_ID_ONCE",
+  "GMAIL_USER",
+  "GMAIL_PASS"
+];
+
+for (const k of REQUIRED_ENVS) {
+  if (!process.env[k]) {
+    console.error(`❌ Missing env var: ${k}`);
+    process.exit(1);
+  }
+}
+
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
+// ---- CONTENT (100 zile / 100 săpt) ----
+const weeklyContent = require("./content.js");
+if (!Array.isArray(weeklyContent) || weeklyContent.length === 0) {
+  console.error("❌ content.js must export a non-empty array of strings.");
+  process.exit(1);
+}
+
+// ---- DB (lowdb v1) ----
+const low = require("lowdb");
+const FileSync = require("lowdb/adapters/FileSync");
+const adapter = new FileSync("db.json");
+const db = low(adapter);
+
+// { subscribers: [{ email, currentWeek, plan, isSub, createdAt, lastSentAt }] }
+db.defaults({ subscribers: [] }).write();
+
+// ---- APP ----
 const app = express();
+app.set("trust proxy", 1);
 
-/* --------------------
-   Middleware
--------------------- */
-app.use(cors());
-app.use(express.json({ limit: "1mb" }));
+// Static files (index.html, logo.png, favicon.png etc.)
+app.use(express.static(__dirname));
 
-/* --------------------
-   ENV (DOAR CE AI)
--------------------- */
-const PORT = Number(process.env.PORT || 3000);
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-const STRIPE_PRICE_ID = process.env.STRIPE_PRICE_ID;
-const isStripeConfigured = Boolean(STRIPE_SECRET_KEY && STRIPE_PRICE_ID);
+// ---- NODEMAILER (GMAIL SMTP) ----
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
+  },
+  tls: { rejectUnauthorized: false },
+});
 
-if (!STRIPE_SECRET_KEY) {
-  console.warn("⚠️ Missing STRIPE_SECRET_KEY in .env");
-}
-if (!STRIPE_PRICE_ID) {
-  console.warn("⚠️ Missing STRIPE_PRICE_ID in .env");
-}
+// ---- HELPERS ----
+const allowedPlans = new Set(["striker", "grappler", "hybrid", "traditional"]);
 
-const stripe = isStripeConfigured ? new Stripe(STRIPE_SECRET_KEY) : null;
-
-/* --------------------
-   In-memory store
-   session_id -> result
--------------------- */
-const sessionStore = new Map();
-
-/* --------------------
-   Helpers
--------------------- */
-function clamp(n, min, max) {
-  return Math.max(min, Math.min(max, n));
+function getBaseUrl(req) {
+  // Dacă ai BASE_URL în env (pentru deploy), îl folosim.
+  // Altfel, îl construim din request.
+  const forwardedProto = req.get("x-forwarded-proto");
+  const protocol = forwardedProto ? forwardedProto.split(",")[0] : req.protocol;
+  return process.env.BASE_URL || `${protocol}://${req.get("host")}`;
 }
 
-function scaleToDelta(v) {
-  const num = Number(v);
-  if (!Number.isFinite(num)) return 0;
-  return (num - 3) * 10; // 1..5 => -20..+20
+function safeEmailFromSession(session) {
+  // Stripe poate avea email în customer_details sau în customer_email (în funcție de config)
+  return (
+    session?.customer_details?.email ||
+    session?.customer_email ||
+    null
+  );
 }
 
-function scoreAttempt(answers) {
-  const traits = {
-    confidence: 50,
-    clarity: 50,
-    playfulness: 50,
-    availability: 50,
-    consistency: 50,
-    anxiety: 50
+function pickNextMessage(user) {
+  if (user.currentWeek >= weeklyContent.length) return null;
+  return weeklyContent[user.currentWeek];
+}
+
+async function sendWeeklyEmail(user) {
+  const msg = pickNextMessage(user);
+  if (!msg) return false;
+
+  const weekNumber = user.currentWeek + 1;
+
+  const mailOptions = {
+    from: `"Personal Trainer" <${process.env.GMAIL_USER}>`,
+    to: user.email,
+    subject: `Your Plan: Week ${weekNumber}`,
+    text: msg,
   };
 
-  const add = (k, v) => traits[k] = clamp(traits[k] + v, 0, 100);
-  const A = answers;
+  await transporter.sendMail(mailOptions);
 
-  add("confidence", scaleToDelta(A[0]?.value));
-  add("anxiety", -scaleToDelta(A[0]?.value));
+  // Update progress
+  db.get("subscribers")
+    .find({ email: user.email })
+    .assign({
+      currentWeek: user.currentWeek + 1,
+      lastSentAt: new Date().toISOString(),
+    })
+    .write();
 
-  if (A[1]?.value === "b") {
-    add("confidence", 8); add("clarity", 8); add("playfulness", 12);
-  }
-  if (A[1]?.value === "d") {
-    add("confidence", -12); add("anxiety", 14);
-  }
-
-  add("playfulness", scaleToDelta(A[4]?.value));
-  add("confidence", scaleToDelta(A[4]?.value) * 0.6);
-
-  add("anxiety", scaleToDelta(A[6]?.value));
-  add("confidence", -scaleToDelta(A[6]?.value) * 0.5);
-
-  add("consistency", scaleToDelta(A[10]?.value));
-  add("clarity", scaleToDelta(A[14]?.value));
-  switch (A[15]?.value) {
-    case "a":
-      add("confidence", 8);
-      add("anxiety", -8);
-      add("consistency", 4);
-      break;
-    case "b":
-      add("clarity", 6);
-      add("consistency", 4);
-      break;
-    case "c":
-      add("anxiety", 10);
-      add("clarity", -4);
-      break;
-    case "d":
-      add("availability", -8);
-      add("consistency", -6);
-      break;
-    default:
-      break;
-  }
-
-  let archetype = "Friendly but Vague";
-  let description = "You’re warm and likable, but your messages can be unclear.";
-
-  if (traits.anxiety >= 70 && traits.clarity <= 45) {
-    archetype = "Overthinker Texter";
-    description = "You overanalyze messages and stress after sending them.";
-  } else if (traits.confidence >= 70 && traits.playfulness >= 65) {
-    archetype = "Confident Flirter";
-    description = "You’re confident, playful, and comfortable making moves.";
-  } else if (traits.consistency <= 40) {
-    archetype = "Avoidant Checker";
-    description = "You disappear and reappear, which breaks connection.";
-  } else if (traits.playfulness <= 40) {
-    archetype = "Dry Responder";
-    description = "Your replies feel short or emotionless.";
-  }
-
-  return { traits, archetype, description };
+  console.log(`✅ Sent Week ${weekNumber} to: ${user.email}`);
+  return true;
 }
 
-/* --------------------
-   Routes
--------------------- */
+async function sendWelcomeEmail(email) {
+  const welcomeText = weeklyContent[0] || "Welcome!";
+  const welcomeMail = {
+    from: `"Personal Trainer" <${process.env.GMAIL_USER}>`,
+    to: email,
+    subject: "Important: Your Training Results",
+    text: `Hi! Thank you for subscribing.\n\nHere is your professional roadmap (Week 1):\n\n${welcomeText}`,
+  };
 
-// Serve index.html
+  await transporter.sendMail(welcomeMail);
+
+  db.get("subscribers")
+    .find({ email })
+    .assign({
+      currentWeek: 1,
+      lastSentAt: new Date().toISOString(),
+    })
+    .write();
+
+  console.log("✅ Welcome email sent!");
+  return true;
+}
+
+function shouldSendWelcome(user) {
+  if (!user) return true;
+  if (user.currentWeek > 0) return false;
+  return !user.lastSentAt;
+}
+
+// ---- CRON: every day at 09:00 server time ----
+cron.schedule("0 9 * * *", async () => {
+  try {
+    console.log("🔔 Weekly email cron started...");
+    const subscribers = db.get("subscribers").value();
+
+    for (const user of subscribers) {
+      // trimitem doar abonatilor (isSub = true)
+      if (!user.isSub) continue;
+
+      // dacă a terminat contentul, nu mai trimitem
+      if (user.currentWeek >= weeklyContent.length) continue;
+
+      try {
+        await sendWeeklyEmail(user);
+      } catch (err) {
+        console.log(`❌ Email failed for ${user.email}: ${err.message}`);
+      }
+    }
+  } catch (err) {
+    console.log("❌ Cron crashed:", err.message);
+  }
+});
+
+// ---- ROUTES ----
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Health check
+// Optional: status route (debug)
 app.get("/health", (req, res) => {
-  res.send("ok");
+  res.json({
+    ok: true,
+    contentCount: weeklyContent.length,
+    subscribers: db.get("subscribers").size().value(),
+  });
 });
 
-// Create Stripe checkout
-app.post("/create-checkout-session", async (req, res) => {
+// 1) PAYMENT SESSION
+// Frontend calls: /pay-session?subscribe=true&choice=striker
+app.get("/pay-session", async (req, res) => {
+  const isSub = req.query.subscribe === "true";
+  const choice = (req.query.choice || "").trim();
+
+  // validate choice (so you don’t store junk)
+  if (!allowedPlans.has(choice)) {
+    return res.status(400).send("Invalid plan/choice.");
+  }
+
+  const priceId = isSub ? process.env.PRICE_ID_SUB : process.env.PRICE_ID_ONCE;
+
   try {
-    if (!isStripeConfigured) {
-      return res.status(500).json({ error: "Stripe is not configured" });
-    }
-    const answers = req.body?.answers;
-
-    if (!Array.isArray(answers) || answers.length !== 16) {
-      return res.status(400).json({ error: "Invalid answers" });
-    }
-
-    const result = scoreAttempt(answers);
+    const baseUrl = getBaseUrl(req);
 
     const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      line_items: [
-        { price: STRIPE_PRICE_ID, quantity: 1 }
-      ],
-      success_url: `http://localhost:${PORT}/?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:${PORT}/?canceled=1`
+      payment_method_types: ["card"],
+      line_items: [{ price: priceId, quantity: 1 }],
+      mode: isSub ? "subscription" : "payment",
+
+      // helpful metadata
+      metadata: {
+        plan: choice,
+        isSub: String(isSub),
+      },
+
+      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&plan=${encodeURIComponent(choice)}&isSub=${isSub}`,
+      cancel_url: `${baseUrl}/`,
     });
 
-    sessionStore.set(session.id, result);
-
-    res.json({ url: session.url });
+    return res.redirect(303, session.url);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Stripe error" });
+    console.error("Stripe Error:", err.message);
+    return res.status(500).send("Stripe error.");
   }
 });
 
-// Verify payment
-app.get("/verify-session", async (req, res) => {
+// 2) SUCCESS
+app.get("/success", async (req, res) => {
+  const { session_id, plan, isSub } = req.query;
+
+  if (!session_id) return res.redirect("/");
+
   try {
-    if (!isStripeConfigured) {
-      return res.status(500).json({ paid: false, error: "Stripe is not configured" });
-    }
-    const sessionId = req.query.session_id;
-    if (!sessionId) {
-      return res.status(400).json({ paid: false });
-    }
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+    const customerEmail = safeEmailFromSession(session);
+    const sessionPlan = session?.metadata?.plan;
+    const sessionIsSub = session?.metadata?.isSub;
+    const resolvedPlan = sessionPlan || plan || "";
+    const resolvedIsSub = sessionIsSub || isSub || "";
+    const redirectPlan = allowedPlans.has(resolvedPlan) ? resolvedPlan : "";
+    const storedPlan = allowedPlans.has(resolvedPlan) ? resolvedPlan : "unknown";
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    if (session.payment_status !== "paid") {
-      return res.json({ paid: false });
-    }
-
-    const result = sessionStore.get(sessionId);
-    if (!result) {
-      return res.json({ paid: true, traits: {}, archetype: "", description: "" });
+    if (!customerEmail) {
+      console.log("❌ No email found in Stripe session.");
+      return res.redirect("/");
     }
 
-    res.json({ paid: true, ...result });
+    // dacă e abonament -> salvăm userul și îi trimitem welcome imediat
+    if (resolvedIsSub === "true") {
+      const userExists = db.get("subscribers").find({ email: customerEmail }).value();
+      const shouldWelcome = shouldSendWelcome(userExists);
+
+      if (!userExists) {
+        db.get("subscribers")
+          .push({
+            email: customerEmail,
+            currentWeek: 0,
+            plan: storedPlan,
+            isSub: true,
+            createdAt: new Date().toISOString(),
+            lastSentAt: null,
+          })
+          .write();
+
+        console.log(`👤 New subscriber saved: ${customerEmail}`);
+
+        if (shouldWelcome) {
+          try {
+            await sendWelcomeEmail(customerEmail);
+          } catch (err) {
+            console.log("❌ Welcome email error:", err.message);
+          }
+        }
+      } else {
+        // dacă există deja, asigurăm isSub true
+        db.get("subscribers")
+          .find({ email: customerEmail })
+          .assign({ isSub: true, plan: storedPlan || userExists.plan })
+          .write();
+
+        if (shouldWelcome) {
+          try {
+            await sendWelcomeEmail(customerEmail);
+          } catch (err) {
+            console.log("❌ Welcome email error:", err.message);
+          }
+        }
+      }
+    }
+
+    // redirect back to frontend with params
+    return res.redirect(`/?session_id=${encodeURIComponent(session_id)}&plan=${encodeURIComponent(redirectPlan)}&isSub=${encodeURIComponent(resolvedIsSub)}`);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ paid: false });
+    console.error("Success Route Error:", err.message);
+    return res.redirect("/");
   }
 });
 
-// Generate advice text
-app.post("/generate-advice", (req, res) => {
-  try {
-    const archetype = String(req.body?.archetype || "").trim();
-    const traits = req.body?.traits || {};
-
-    if (!archetype) {
-      return res.status(400).json({ error: "Missing archetype" });
-    }
-
-    const topTraits = Object.entries(traits)
-      .filter(([, value]) => Number.isFinite(Number(value)))
-      .sort((a, b) => Number(b[1]) - Number(a[1]))
-      .slice(0, 2)
-      .map(([key]) => key);
-
-    const adviceByType = {
-      "Overthinker Texter": [
-        "Send shorter messages and end with one clear question.",
-        "Wait 20–30 minutes before sending a follow-up.",
-        "Use a simple opener like: “Hey! How’s your day going?”"
-      ],
-      "Confident Flirter": [
-        "Keep flirting, but pair it with a concrete plan.",
-        "Avoid rapid-fire texts; leave space for them to reply.",
-        "Try: “You seem fun—coffee this week?”"
-      ],
-      "Avoidant Checker": [
-        "Aim for consistency: reply within 24 hours.",
-        "Name your intent once: “I like talking to you.”",
-        "Plan a short, low-pressure meet-up."
-      ],
-      "Dry Responder": [
-        "Add warmth with one emoji or a short compliment.",
-        "Ask open-ended questions to keep momentum.",
-        "Try: “That sounds fun—what made you get into it?”"
-      ],
-      "Friendly but Vague": [
-        "Be direct about interest: “I’d like to take you out.”",
-        "Replace hints with specific plans.",
-        "Close messages with a clear next step."
-      ],
-      "Warm Storyteller": [
-        "Keep your stories shorter and end with a question.",
-        "Match their pace; don’t overshare too early.",
-        "Turn a warm vibe into a plan."
-      ]
-    };
-
-    const baseAdvice = adviceByType[archetype] || [
-      "Keep messages clear, warm, and consistent.",
-      "Ask one open-ended question at a time.",
-      "Suggest a specific plan when the vibe is good."
-    ];
-
-    const traitTips = [];
-    if (topTraits.includes("anxiety")) {
-      traitTips.push("If you feel anxious, draft your message and wait 10 minutes before sending.");
-    }
-    if (topTraits.includes("confidence")) {
-      traitTips.push("Lean into confidence by stating one clear intention.");
-    }
-    if (topTraits.includes("clarity")) {
-      traitTips.push("Keep clarity high: one idea per text.");
-    }
-    if (topTraits.includes("consistency")) {
-      traitTips.push("Consistency builds trust: reply at a steady pace.");
-    }
-    if (topTraits.includes("playfulness")) {
-      traitTips.push("Add light humor or a playful callback to their message.");
-    }
-    if (topTraits.includes("availability")) {
-      traitTips.push("Balance availability with self-respect—don’t over-explain.");
-    }
-
-    const adviceText = [
-      `Archetype: ${archetype}`,
-      "",
-      "What to do next:",
-      ...baseAdvice.map((line) => `- ${line}`),
-      "",
-      "Trait focus:",
-      ...(traitTips.length ? traitTips.map((line) => `- ${line}`) : ["- Keep a balanced pace and stay warm."])
-    ].join("\n");
-
-    res.json({ adviceText });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Advice generation failed" });
-  }
-});
-
-/* --------------------
-   Start server
--------------------- */
+// ---- START ----
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
