@@ -8,6 +8,7 @@ const cors = require("cors");
 const Stripe = require("stripe");
 
 const app = express();
+app.set("trust proxy", 1);
 
 /* --------------------
    Middleware
@@ -83,21 +84,39 @@ function scoreAttempt(answers) {
   add("consistency", scaleToDelta(A[10]?.value));
   add("clarity", scaleToDelta(A[14]?.value));
 
-  let archetype = "Friendly but Vague";
-  let description = "You’re warm and likable, but your messages can be unclear.";
+  switch (A[15]?.value) {
+    case "a":
+      add("clarity", 10); add("consistency", 8); add("confidence", 4);
+      break;
+    case "b":
+      add("consistency", 4); add("clarity", 2);
+      break;
+    case "c":
+      add("consistency", -6); add("availability", -4); add("anxiety", 4);
+      break;
+    case "d":
+      add("consistency", -10); add("availability", -8); add("anxiety", 8);
+      break;
+  }
+
+  let archetype = "Prietenos dar vag";
+  let description = "Ești cald(ă) și plăcut(ă), dar mesajele pot fi neclare.";
 
   if (traits.anxiety >= 70 && traits.clarity <= 45) {
-    archetype = "Overthinker Texter";
-    description = "You overanalyze messages and stress after sending them.";
+    archetype = "Mesager supragânditor";
+    description = "Analizezi prea mult mesajele și te stresezi după ce le trimiți.";
   } else if (traits.confidence >= 70 && traits.playfulness >= 65) {
-    archetype = "Confident Flirter";
-    description = "You’re confident, playful, and comfortable making moves.";
+    archetype = "Flirter sigur pe sine";
+    description = "Ești sigur(ă) pe tine, jucăuș(ă) și comod(ă) cu inițiativa.";
   } else if (traits.consistency <= 40) {
-    archetype = "Avoidant Checker";
-    description = "You disappear and reappear, which breaks connection.";
+    archetype = "Evitant intermitent";
+    description = "Dispari și revii, iar asta rupe conexiunea.";
   } else if (traits.playfulness <= 40) {
-    archetype = "Dry Responder";
-    description = "Your replies feel short or emotionless.";
+    archetype = "Răspuns sec";
+    description = "Răspunsurile tale par scurte sau fără emoție.";
+  } else if (traits.availability >= 65 && traits.clarity >= 60 && traits.playfulness >= 50) {
+    archetype = "Povestitor cald";
+    description = "Conectezi prin căldură și conversație bună. Ține mesajele scurte și orientate spre acțiune.";
   }
 
   return { traits, archetype, description };
@@ -125,19 +144,20 @@ app.post("/create-checkout-session", async (req, res) => {
     }
     const answers = req.body?.answers;
 
-    if (!Array.isArray(answers) || answers.length !== 15) {
+    if (!Array.isArray(answers) || answers.length !== 16) {
       return res.status(400).json({ error: "Invalid answers" });
     }
 
     const result = scoreAttempt(answers);
 
+    const baseUrl = req.get("origin") || `${req.protocol}://${req.get("host")}`;
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: [
         { price: STRIPE_PRICE_ID, quantity: 1 }
       ],
-      success_url: `http://localhost:${PORT}/?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:${PORT}/?canceled=1`
+      success_url: `${baseUrl}/?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/?canceled=1`
     });
 
     sessionStore.set(session.id, result);
@@ -195,72 +215,72 @@ app.post("/generate-advice", (req, res) => {
       .map(([key]) => key);
 
     const adviceByType = {
-      "Overthinker Texter": [
-        "Send shorter messages and end with one clear question.",
-        "Wait 20–30 minutes before sending a follow-up.",
-        "Use a simple opener like: “Hey! How’s your day going?”"
+      "Mesager supragânditor": [
+        "Trimite mesaje mai scurte și încheie cu o întrebare clară.",
+        "Așteaptă 20–30 de minute înainte de un follow-up.",
+        "Începe simplu: „Hey! Cum ți-a fost ziua?”"
       ],
-      "Confident Flirter": [
-        "Keep flirting, but pair it with a concrete plan.",
-        "Avoid rapid-fire texts; leave space for them to reply.",
-        "Try: “You seem fun—coffee this week?”"
+      "Flirter sigur pe sine": [
+        "Păstrează flirtul, dar leagă-l de un plan concret.",
+        "Evită spamul de mesaje; lasă spațiu să răspundă.",
+        "Încearcă: „Pari fun — o cafea săptămâna asta?”"
       ],
-      "Avoidant Checker": [
-        "Aim for consistency: reply within 24 hours.",
-        "Name your intent once: “I like talking to you.”",
-        "Plan a short, low-pressure meet-up."
+      "Evitant intermitent": [
+        "Țintește consistența: răspunde în 24h.",
+        "Spune o dată intenția: „Îmi place să vorbesc cu tine.”",
+        "Propune o întâlnire scurtă, fără presiune."
       ],
-      "Dry Responder": [
-        "Add warmth with one emoji or a short compliment.",
-        "Ask open-ended questions to keep momentum.",
-        "Try: “That sounds fun—what made you get into it?”"
+      "Răspuns sec": [
+        "Adaugă căldură cu un emoji sau un compliment scurt.",
+        "Pune întrebări deschise ca să păstrezi ritmul.",
+        "Încearcă: „Sună bine — ce te-a făcut să intri în asta?”"
       ],
-      "Friendly but Vague": [
-        "Be direct about interest: “I’d like to take you out.”",
-        "Replace hints with specific plans.",
-        "Close messages with a clear next step."
+      "Prietenos dar vag": [
+        "Fii direct(ă) despre interes: „Aș vrea să ieșim.”",
+        "Înlocuiește hinturile cu planuri concrete.",
+        "Închide mesajele cu un pas clar."
       ],
-      "Warm Storyteller": [
-        "Keep your stories shorter and end with a question.",
-        "Match their pace; don’t overshare too early.",
-        "Turn a warm vibe into a plan."
+      "Povestitor cald": [
+        "Scurtează poveștile și încheie cu o întrebare.",
+        "Potrivește ritmul lor; nu spune prea mult prea repede.",
+        "Transformă vibe-ul bun într-un plan."
       ]
     };
 
     const baseAdvice = adviceByType[archetype] || [
-      "Keep messages clear, warm, and consistent.",
-      "Ask one open-ended question at a time.",
-      "Suggest a specific plan when the vibe is good."
+      "Păstrează mesajele clare, calde și constante.",
+      "Pune o singură întrebare deschisă pe rând.",
+      "Propune un plan concret când vibe-ul e bun."
     ];
 
     const traitTips = [];
     if (topTraits.includes("anxiety")) {
-      traitTips.push("If you feel anxious, draft your message and wait 10 minutes before sending.");
+      traitTips.push("Dacă te simți anxios/anxioasă, scrie mesajul și așteaptă 10 minute.");
     }
     if (topTraits.includes("confidence")) {
-      traitTips.push("Lean into confidence by stating one clear intention.");
+      traitTips.push("Sprijină încrederea cu o intenție clară.");
     }
     if (topTraits.includes("clarity")) {
-      traitTips.push("Keep clarity high: one idea per text.");
+      traitTips.push("Ține claritatea sus: o singură idee per mesaj.");
     }
     if (topTraits.includes("consistency")) {
-      traitTips.push("Consistency builds trust: reply at a steady pace.");
+      traitTips.push("Consistența creează încredere: răspunde într-un ritm stabil.");
     }
     if (topTraits.includes("playfulness")) {
-      traitTips.push("Add light humor or a playful callback to their message.");
+      traitTips.push("Adaugă umor ușor sau o glumă legată de mesajul lor.");
     }
     if (topTraits.includes("availability")) {
-      traitTips.push("Balance availability with self-respect—don’t over-explain.");
+      traitTips.push("Echilibrează disponibilitatea cu respectul de sine — nu explica prea mult.");
     }
 
     const adviceText = [
-      `Archetype: ${archetype}`,
+      `Profil: ${archetype}`,
       "",
-      "What to do next:",
+      "Ce faci mai departe:",
       ...baseAdvice.map((line) => `- ${line}`),
       "",
-      "Trait focus:",
-      ...(traitTips.length ? traitTips.map((line) => `- ${line}`) : ["- Keep a balanced pace and stay warm."])
+      "Focus pe trăsături:",
+      ...(traitTips.length ? traitTips.map((line) => `- ${line}`) : ["- Ține un ritm echilibrat și rămâi cald(ă)."])
     ].join("\n");
 
     res.json({ adviceText });
