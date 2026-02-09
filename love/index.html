@@ -4,6 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Love Talk Test</title>
+
+  <!-- FAVICON (inline, no extra files) -->
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22g%22%20cx%3D%2230%25%22%20cy%3D%2220%25%22%20r%3D%2280%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ff7ab2%22/%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ff2f7d%22/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath%20d%3D%22M32%205C19%205%209%2014.2%209%2026.2c0%2010%207.3%2018.6%2017.2%2020.6l5.8%209.2%205.9-9.2C47.7%2044.8%2055%2036.2%2055%2026.2%2055%2014.2%2045%205%2032%205z%22%20fill%3D%22url(%23g)%22/%3E%3Ccircle%20cx%3D%2226%22%20cy%3D%2226%22%20r%3D%222.6%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2226%22%20r%3D%222.6%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2238%22%20cy%3D%2226%22%20r%3D%222.6%22%20fill%3D%22%23fff%22/%3E%3Cpath%20d%3D%22M49%2010c-3.2%200-6%202.2-6%205.7%200%203%202.3%205.4%205.4%205.6l1.8%202.9%201.9-2.9c3.1-.2%205.4-2.6%205.4-5.6C57.5%2012.2%2054.2%2010%2049%2010z%22%20fill%3D%22%23ff3b84%22/%3E%3C/svg%3E' />
+
   <style>
     :root{
       --bg:#0b0b12; --card:#121224; --muted:#a7a7c7; --text:#f2f2ff;
@@ -36,7 +40,6 @@
       background: linear-gradient(135deg, rgba(255,77,141,.35), rgba(255,122,178,.15));
       border:1px solid var(--border);
       box-shadow: 0 10px 30px rgba(0,0,0,.3);
-      font-size:20px;
     }
     .brand h1{font-size:16px; margin:0; letter-spacing:.4px}
     .brand p{margin:0; color:var(--muted); font-size:12px}
@@ -90,7 +93,6 @@
     }
     .primary:hover{background: linear-gradient(135deg, rgba(255,77,141,.45), rgba(255,122,178,.28))}
     .ghost{background: transparent}
-    .danger{border-color: rgba(251,191,36,.40);}
 
     .divider{height:1px; background: var(--border); margin:14px 0}
 
@@ -231,7 +233,23 @@
   <div class="wrap">
     <div class="topbar">
       <div class="brand">
-        <div class="logo">💖</div>
+        <!-- LOGO (inline SVG, no extra files) -->
+        <div class="logo" aria-label="Love Talk Test logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="28" height="28" role="img" aria-hidden="true">
+            <defs>
+              <radialGradient id="g" cx="30%" cy="20%" r="80%">
+                <stop offset="0%" stop-color="#ff7ab2"/>
+                <stop offset="100%" stop-color="#ff2f7d"/>
+              </radialGradient>
+            </defs>
+            <path d="M32 5C19 5 9 14.2 9 26.2c0 10 7.3 18.6 17.2 20.6l5.8 9.2 5.9-9.2C47.7 44.8 55 36.2 55 26.2 55 14.2 45 5 32 5z" fill="url(#g)"/>
+            <circle cx="26" cy="26" r="2.6" fill="#fff"/>
+            <circle cx="32" cy="26" r="2.6" fill="#fff"/>
+            <circle cx="38" cy="26" r="2.6" fill="#fff"/>
+            <path d="M49 10c-3.2 0-6 2.2-6 5.7 0 3 2.3 5.4 5.4 5.6l1.8 2.9 1.9-2.9c3.1-.2 5.4-2.6 5.4-5.6C57.5 12.2 54.2 10 49 10z" fill="#ff3b84"/>
+          </svg>
+        </div>
+
         <div>
           <h1>Love Talk Test</h1>
           <p>How you message when you like someone</p>
@@ -358,56 +376,56 @@
     // Quiz data (15 questions)
     // ---------------------------
     const QUESTIONS = [
-      { id: 1, type: "scale", text: "How confident are you starting a conversation with someone you like?", minLabel:"Not confident", maxLabel:"Very confident" },
+      { id: 1, type: "scale", text: "How confident are you starting a conversation with someone you like?" },
       { id: 2, type: "choice", text: "What’s your usual first message?", options: [
         { key:"a", label:"“Hey” / “Hi”", sub:"Simple and safe." },
         { key:"b", label:"A witty opener about their profile/story", sub:"Playful + engaging." },
         { key:"c", label:"A long paragraph explaining everything", sub:"Deep… but can feel intense." },
         { key:"d", label:"I don’t message first", sub:"I wait and hope they do." }
       ]},
-      { id: 3, type: "scale", text: "How balanced is your reply speed? (1 = too fast, 5 = too slow)", minLabel:"Too fast", maxLabel:"Too slow" },
+      { id: 3, type: "scale", text: "How balanced is your reply speed? (1 = too fast, 5 = too slow)" },
       { id: 4, type: "choice", text: "They saw your message but didn’t reply. You…", options: [
         { key:"a", label:"Stay calm and wait", sub:"No chasing." },
         { key:"b", label:"Send one polite follow-up later", sub:"Clear and respectful." },
         { key:"c", label:"Send 2–3 messages until they respond", sub:"Anxiety spike." },
         { key:"d", label:"Ghost them back", sub:"Ego protection." }
       ]},
-      { id: 5, type: "scale", text: "How comfortable are you flirting?", minLabel:"Not at all", maxLabel:"Very" },
+      { id: 5, type: "scale", text: "How comfortable are you flirting?" },
       { id: 6, type: "choice", text: "Your compliment style is:", options: [
         { key:"a", label:"Generic: “You’re cute”", sub:"Okay, but forgettable." },
         { key:"b", label:"Specific: “Your smile + vibe is addictive”", sub:"Best option." },
         { key:"c", label:"Too intense: “I think you’re my soulmate”", sub:"Can scare people." },
         { key:"d", label:"I avoid compliments", sub:"I don’t want to seem needy." }
       ]},
-      { id: 7, type: "scale", text: "After sending a message, how much do you overthink it?", minLabel:"Never", maxLabel:"A lot" },
+      { id: 7, type: "scale", text: "After sending a message, how much do you overthink it?" },
       { id: 8, type: "choice", text: "When it’s time to meet, you…", options: [
         { key:"a", label:"Suggest a specific plan (day + place)", sub:"Confident + clear." },
         { key:"b", label:"Hint: “We should hang sometime”", sub:"Vague." },
         { key:"c", label:"Wait for them to suggest", sub:"Low initiative." },
         { key:"d", label:"Avoid meeting and keep texting", sub:"Safety zone." }
       ]},
-      { id: 9, type: "scale", text: "How emotionally open are you when you like someone?", minLabel:"Closed", maxLabel:"Open" },
+      { id: 9, type: "scale", text: "How emotionally open are you when you like someone?" },
       { id: 10, type: "choice", text: "How often do you use humor in flirting?", options: [
         { key:"a", label:"Often", sub:"Good spark." },
         { key:"b", label:"Sometimes", sub:"Balanced." },
         { key:"c", label:"Rarely", sub:"More serious." },
         { key:"d", label:"Never", sub:"Straight to the point." }
       ]},
-      { id: 11, type: "scale", text: "How consistent are you (not disappearing for days)?", minLabel:"Not consistent", maxLabel:"Very consistent" },
+      { id: 11, type: "scale", text: "How consistent are you (not disappearing for days)?" },
       { id: 12, type: "choice", text: "Your boundaries in dating are:", options: [
         { key:"a", label:"Clear and respectful", sub:"Healthy." },
         { key:"b", label:"Flexible but fair", sub:"Usually fine." },
         { key:"c", label:"I people-please", sub:"Risky." },
         { key:"d", label:"I build walls", sub:"Avoiding closeness." }
       ]},
-      { id: 13, type: "scale", text: "Texting vs real life: how comfortable are you in person?", minLabel:"Text > IRL", maxLabel:"IRL is easy" },
+      { id: 13, type: "scale", text: "Texting vs real life: how comfortable are you in person? (1 = texting only, 5 = IRL easy)" },
       { id: 14, type: "choice", text: "If they flirt first, you…", options: [
         { key:"a", label:"Match their energy", sub:"Best." },
         { key:"b", label:"Get shy and go quiet", sub:"Nervous." },
         { key:"c", label:"Ignore it", sub:"Missed opportunity." },
         { key:"d", label:"Go too intense", sub:"Can overwhelm." }
       ]},
-      { id: 15, type: "scale", text: "How clear are you about what you want with them?", minLabel:"Not clear", maxLabel:"Very clear" }
+      { id: 15, type: "scale", text: "How clear are you about what you want with them?" }
     ];
 
     // Client-side scoring (preview only; server will recompute for truth)
@@ -417,7 +435,6 @@
     function scoreClient(answers){
       const traits = { confidence:50, clarity:50, playfulness:50, availability:50, consistency:50, anxiety:50 };
       const A = answers;
-
       const add=(t,d)=> traits[t]=clamp(traits[t]+d,0,100);
 
       add("confidence", scaleToDelta(A[0]?.value));
@@ -520,13 +537,11 @@
       return { traits, archetype, description };
     }
 
-    // ---------------------------
     // App state
-    // ---------------------------
-    const answers = Array(15).fill(null); // each item: {type, value}
+    const answers = Array(15).fill(null);
     let idx = 0;
     let paid = false;
-    let unlocked = null; // {archetype, traits, description}
+    let unlocked = null;
 
     // Elements
     const statusPill = document.getElementById("statusPill");
@@ -610,7 +625,6 @@
         });
       } else {
         qScale.classList.remove("hidden");
-        // 1..5 chips
         for(let v=1; v<=5; v++){
           const chip = document.createElement("div");
           chip.className = "chip" + (Number(current?.value) === v ? " selected" : "");
@@ -670,9 +684,6 @@
       show("results");
     }
 
-    // ---------------------------
-    // Stripe flow
-    // ---------------------------
     async function createCheckout(){
       if(!allAnswered()){
         payNote.textContent = "Answer all questions before payment.";
@@ -708,7 +719,6 @@
         returnHint.style.display = "block";
         returnHint.textContent = "Payment canceled. You can try again.";
         setPaid(false);
-        // keep them on pay screen if finished
         if(allAnswered()) goPayScreen();
         return;
       }
@@ -724,7 +734,6 @@
         if(data.paid){
           setPaid(true);
           renderResults(data);
-          // clean URL
           const clean = window.location.origin + window.location.pathname;
           window.history.replaceState({}, "", clean);
         } else {
@@ -737,9 +746,6 @@
       }
     }
 
-    // ---------------------------
-    // Advice
-    // ---------------------------
     async function loadAdvice(){
       if(!paid || !unlocked){
         adviceText.textContent = "Locked. Please unlock results first.";
@@ -762,12 +768,9 @@
       }
     }
 
-    // ---------------------------
     // Events
-    // ---------------------------
     btnStart.onclick = () => { idx = 0; show("quiz"); renderQuestion(); };
     btnDemoFill.onclick = () => {
-      // quick random but reasonable demo
       const demo = [
         {type:"scale",value:4},{type:"choice",value:"b"},{type:"scale",value:3},{type:"choice",value:"b"},
         {type:"scale",value:4},{type:"choice",value:"b"},{type:"scale",value:2},{type:"choice",value:"a"},
@@ -782,18 +785,9 @@
 
     btnBack.onclick = () => { if(idx>0){ idx--; renderQuestion(); } };
     btnNext.onclick = () => {
-      // require answer
-      if(!answers[idx]){
-        alert("Pick an option first.");
-        return;
-      }
-      if(idx < 14){
-        idx++;
-        renderQuestion();
-      } else {
-        // finished
-        goPayScreen();
-      }
+      if(!answers[idx]){ alert("Pick an option first."); return; }
+      if(idx < 14){ idx++; renderQuestion(); }
+      else { goPayScreen(); }
     };
 
     btnPay.onclick = createCheckout;
@@ -803,7 +797,6 @@
       idx=0; setPaid(false); unlocked=null;
       show("landing");
     };
-
     btnRetake.onclick = btnRestart.onclick;
     btnRetake2.onclick = btnRestart.onclick;
 
