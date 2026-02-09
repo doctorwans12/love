@@ -28,7 +28,7 @@ app.set("trust proxy", 1);
 app.use(express.static(__dirname));
 
 // ---- HELPERS ----
-const allowedPlans = new Set(["romantic", "loyal", "adventurous", "independent"]);
+const allowedPlans = new Set(["A", "B", "C", "D"]);
 
 function getBaseUrl(req) {
   // Dacă ai BASE_URL în env (pentru deploy), îl folosim.
@@ -51,7 +51,7 @@ app.get("/health", (req, res) => {
 });
 
 // 1) PAYMENT SESSION
-// Frontend calls: /pay-session?choice=romantic
+// Frontend calls: /pay-session?choice=A
 app.get("/pay-session", async (req, res) => {
   const choice = (req.query.choice || "").trim();
 
