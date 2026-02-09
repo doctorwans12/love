@@ -277,7 +277,7 @@
         <!-- QUIZ -->
         <section id="screenQuiz" class="hidden">
           <div class="qhead">
-            <div class="progress" id="progressText">Question 1/15</div>
+            <div class="progress" id="progressText">Question 1/16</div>
             <div class="bar" aria-hidden="true"><div id="progressBar"></div></div>
           </div>
 
@@ -358,7 +358,7 @@
       <div class="card side">
         <h3>How it works</h3>
         <p>
-          Answer 15 quick questions about texting + dating vibes. After payment, you’ll unlock your archetype,
+          Answer 16 quick questions about texting + dating vibes. After payment, you’ll unlock your archetype,
           trait scores, and personalized advice with message scripts.
         </p>
         <div class="hint">
@@ -373,7 +373,7 @@
 
   <script>
     // ---------------------------
-    // Quiz data (15 questions)
+    // Quiz data (16 questions)
     // ---------------------------
     const QUESTIONS = [
       { id: 1, type: "scale", text: "How confident are you starting a conversation with someone you like?" },
@@ -425,7 +425,13 @@
         { key:"c", label:"Ignore it", sub:"Missed opportunity." },
         { key:"d", label:"Go too intense", sub:"Can overwhelm." }
       ]},
-      { id: 15, type: "scale", text: "How clear are you about what you want with them?" }
+      { id: 15, type: "scale", text: "How clear are you about what you want with them?" },
+      { id: 16, type: "choice", text: "When they take hours to reply, you…", options: [
+        { key:"a", label:"Stay chill and focus on your day", sub:"Secure energy." },
+        { key:"b", label:"Send a light follow-up later", sub:"Balanced." },
+        { key:"c", label:"Double-text quickly", sub:"Anxiety spike." },
+        { key:"d", label:"Pull back or ghost", sub:"Protection mode." }
+      ]}
     ];
 
     // Client-side scoring (preview only; server will recompute for truth)
@@ -513,6 +519,13 @@
       add("clarity", scaleToDelta(A[14]?.value));
       add("confidence", scaleToDelta(A[14]?.value)*0.4);
 
+      switch (A[15]?.value){
+        case "a": add("confidence",+8); add("anxiety",-8); add("consistency",+4); break;
+        case "b": add("clarity",+6); add("consistency",+4); break;
+        case "c": add("anxiety",+10); add("clarity",-4); break;
+        case "d": add("availability",-8); add("consistency",-6); break;
+      }
+
       const t=traits;
       let archetype="Friendly but Vague";
       let description="You’re warm and likable, but your messages can be unclear. A little more directness will make your dating life easier.";
@@ -538,7 +551,7 @@
     }
 
     // App state
-    const answers = Array(15).fill(null);
+    const answers = Array(16).fill(null);
     let idx = 0;
     let paid = false;
     let unlocked = null;
@@ -594,8 +607,8 @@
 
     function renderQuestion(){
       const q = QUESTIONS[idx];
-      progressText.textContent = `Question ${idx+1}/15`;
-      progressBar.style.width = `${((idx+1)/15)*100}%`;
+      progressText.textContent = `Question ${idx+1}/16`;
+      progressBar.style.width = `${((idx+1)/16)*100}%`;
       qText.textContent = q.text;
 
       qOptions.classList.add("hidden");
@@ -638,7 +651,7 @@
       }
 
       btnBack.disabled = idx === 0;
-      btnNext.textContent = idx === 14 ? "Finish" : "Next";
+      btnNext.textContent = idx === 15 ? "Finish" : "Next";
     }
 
     function allAnswered(){
@@ -775,9 +788,9 @@
         {type:"scale",value:4},{type:"choice",value:"b"},{type:"scale",value:3},{type:"choice",value:"b"},
         {type:"scale",value:4},{type:"choice",value:"b"},{type:"scale",value:2},{type:"choice",value:"a"},
         {type:"scale",value:4},{type:"choice",value:"b"},{type:"scale",value:4},{type:"choice",value:"a"},
-        {type:"scale",value:4},{type:"choice",value:"a"},{type:"scale",value:4}
+        {type:"scale",value:4},{type:"choice",value:"a"},{type:"scale",value:4},{type:"choice",value:"a"}
       ];
-      for(let i=0;i<15;i++) answers[i]=demo[i];
+      for(let i=0;i<16;i++) answers[i]=demo[i];
       idx = 0;
       show("quiz");
       renderQuestion();
@@ -786,14 +799,14 @@
     btnBack.onclick = () => { if(idx>0){ idx--; renderQuestion(); } };
     btnNext.onclick = () => {
       if(!answers[idx]){ alert("Pick an option first."); return; }
-      if(idx < 14){ idx++; renderQuestion(); }
+      if(idx < 15){ idx++; renderQuestion(); }
       else { goPayScreen(); }
     };
 
     btnPay.onclick = createCheckout;
 
     btnRestart.onclick = () => {
-      for(let i=0;i<15;i++) answers[i]=null;
+      for(let i=0;i<16;i++) answers[i]=null;
       idx=0; setPaid(false); unlocked=null;
       show("landing");
     };
