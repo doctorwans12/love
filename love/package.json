@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Love quiz with Stripe one-time payment.",
   "main": "server.js",
+  "type": "commonjs",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node server.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": "18.x"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
@@ -16,5 +16,4 @@
     "stripe": "^16.12.0"
   }
 }
-
 
