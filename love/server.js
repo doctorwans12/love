@@ -1,113 +1,107 @@
-// server.js
+"use strict";
+
 require("dotenv").config();
 
-const express = require("express");
 const path = require("path");
+const express = require("express");
 const Stripe = require("stripe");
 
-// ---- VALIDARE ENV (ca să nu pornești serverul “în gol”) ----
-const REQUIRED_ENVS = [
-  "STRIPE_SECRET_KEY",
-  "PRICE_ID_ONCE"
-];
+// ----------------------
+// ENV
+// ----------------------
+const PORT = Number(process.env.PORT || 3000);
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+const STRIPE_PRICE_ID = process.env.STRIPE_PRICE_ID;
 
-for (const k of REQUIRED_ENVS) {
-  if (!process.env[k]) {
-    console.error(`❌ Missing env var: ${k}`);
-    process.exit(1);
-  }
+if (!STRIPE_SECRET_KEY) {
+  console.error("❌ Missing STRIPE_SECRET_KEY in env");
+  process.exit(1);
+}
+if (!STRIPE_PRICE_ID) {
+  console.error("❌ Missing STRIPE_PRICE_ID in env");
+  process.exit(1);
 }
 
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(STRIPE_SECRET_KEY);
 
-// ---- APP ----
+// ----------------------
+// APP
+// ----------------------
 const app = express();
 app.set("trust proxy", 1);
 
-// Static files (index.html, logo.png, favicon.png etc.)
-app.use(express.static(__dirname));
+// Static files: index.html, logo.png, favicon.png etc.
+app.use(express.static(__dirname, { extensions: ["html"] }));
 
-// ---- HELPERS ----
-const allowedPlans = new Set(["A", "B", "C", "D"]);
+// Health check (optional, for Railway)
+app.get("/health", (req, res) => res.json({ ok: true }));
 
 function getBaseUrl(req) {
-  // Dacă ai BASE_URL în env (pentru deploy), îl folosim.
-  // Altfel, îl construim din request.
-  const forwardedProto = req.get("x-forwarded-proto");
-  const protocol = forwardedProto ? forwardedProto.split(",")[0] : req.protocol;
-  return process.env.BASE_URL || `${protocol}://${req.get("host")}`;
+  // Railway stă în spatele proxy -> folosim x-forwarded-proto corect
+  const xfProto = req.get("x-forwarded-proto");
+  const protocol = xfProto ? xfProto.split(",")[0].trim() : req.protocol;
+  return `${protocol}://${req.get("host")}`;
 }
 
-// ---- ROUTES ----
+// Home
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Optional: status route (debug)
-app.get("/health", (req, res) => {
-  res.json({
-    ok: true,
-  });
-});
-
-// 1) PAYMENT SESSION
-// Frontend calls: /pay-session?choice=A
+// ----------------------
+// STRIPE CHECKOUT
+// ----------------------
+// Frontend: window.location.href = `/pay-session?choice=${choice}`
 app.get("/pay-session", async (req, res) => {
-  const choice = (req.query.choice || "").trim();
-
-  // validate choice (so you don’t store junk)
-  if (!allowedPlans.has(choice)) {
-    return res.status(400).send("Invalid plan/choice.");
-  }
-
-  const priceId = process.env.PRICE_ID_ONCE;
-
   try {
+    const choice = String(req.query.choice || "").trim().toUpperCase();
+    const allowed = new Set(["A", "B", "C", "D"]);
+    if (!allowed.has(choice)) {
+      return res.status(400).send("Invalid choice. Use A/B/C/D.");
+    }
+
     const baseUrl = getBaseUrl(req);
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [{ price: priceId, quantity: 1 }],
       mode: "payment",
+      line_items: [{ price: STRIPE_PRICE_ID, quantity: 1 }],
 
-      // helpful metadata
-      metadata: {
-        plan: choice,
-      },
+      // stocăm planul în metadata (ca să-l știm după plata)
+      metadata: { plan: choice },
 
-      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&plan=${encodeURIComponent(choice)}`,
-      cancel_url: `${baseUrl}/`,
+      success_url: `${baseUrl}/?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/?canceled=1`,
     });
 
+    // Stripe returnează session.url (link de checkout)
     return res.redirect(303, session.url);
   } catch (err) {
-    console.error("Stripe Error:", err.message);
-    return res.status(500).send("Stripe error.");
+    console.error("Stripe /pay-session error:", err);
+    return res.status(500).send("Stripe error creating checkout session.");
   }
 });
 
-// 2) SUCCESS
-app.get("/success", async (req, res) => {
-  const { session_id, plan } = req.query;
-
-  if (!session_id) return res.redirect("/");
-
+// Verify payment status (frontend calls this after redirect back)
+app.get("/verify-session", async (req, res) => {
   try {
-    const session = await stripe.checkout.sessions.retrieve(session_id);
-    const sessionPlan = session?.metadata?.plan;
-    const resolvedPlan = sessionPlan || plan || "";
-    const redirectPlan = allowedPlans.has(resolvedPlan) ? resolvedPlan : "";
+    const sessionId = String(req.query.session_id || "").trim();
+    if (!sessionId) return res.status(400).json({ paid: false, error: "Missing session_id" });
 
-    // redirect back to frontend with params
-    return res.redirect(`/?session_id=${encodeURIComponent(session_id)}&plan=${encodeURIComponent(redirectPlan)}`);
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    const paid = session.payment_status === "paid";
+    const plan = session?.metadata?.plan || null;
+
+    return res.json({ paid, plan });
   } catch (err) {
-    console.error("Success Route Error:", err.message);
-    return res.redirect("/");
+    console.error("Stripe /verify-session error:", err);
+    return res.status(500).json({ paid: false, error: "Verify failed" });
   }
 });
 
-// ---- START ----
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+// ----------------------
+// START
+// ----------------------
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
